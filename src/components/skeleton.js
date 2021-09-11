@@ -1,5 +1,4 @@
-//import Skeleton from '@material-ui/lab/Skeleton';
-import Skeleton from "react-loading-skeleton"
+import Skeleton from '@material-ui/lab/Skeleton';
 
 export function LoadingSkeleton({length}){
    return  Array.apply(0, Array(length)).map(function (x, i) {
