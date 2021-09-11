@@ -1,8 +1,7 @@
-import DashLayout from '../../../../../components/dashlayout'
-import User from '../../../../../services/User'
+import DashLayout from '../../../../../../components/dashlayout'
+import User from '../../../../../../services/User'
 import { useEffect, useState } from 'react';
-import LeagueDisplay from '../components/leaguepagedisplay'
-import {getRouteData} from '../components/appmethods';
+import LeagueDisplay from '../../components/leaguepagedisplay'
 import swal from 'sweetalert';
 import {toast} from 'react-toastify'
 import { makeStyles } from '@material-ui/core/styles';
@@ -12,12 +11,15 @@ import Fade from '@material-ui/core/Fade';
 import DatePicker from "react-datepicker";
 import moment from 'moment'
 import "react-datepicker/dist/react-datepicker.css";
+import { useRouter } from 'next/router';
 
 
 export default function SportHome(){
+
+    const router = useRouter();
+    const { leaguename, leagueid } = router.query; 
     const [checkLeagueStart, saveLeagueStart] = useState(false) 
     const [pageReady, setPageReady] = useState(false) 
-    const  {league_name , league_id} = getRouteData(); 
     const [currentSeason, setCurrentSeason] = useState("")
     const [open, setOpen] = useState(false)
     const [startDate, setStartDate] = useState(new Date());
@@ -53,7 +55,7 @@ export default function SportHome(){
         {
       setPageReady(true)
       setCurrentSeason(localStorage.getItem("current_season"))
-           User.getServerData("/checkleague/"+league_id)
+           User.getServerData("/checkleague/"+leagueid)
             .then( (response)=>{
                 saveLeagueStart(true);
             })
@@ -66,15 +68,15 @@ export default function SportHome(){
 
         function startLeague(){
             const formJson = {
-                "league_id" : league_id,
-                "league_type" : league_id,
+                "league_id" : leagueid,
+                "league_type" : leagueid,
                 "league_season" :currentSeason,
                 "start_date" : moment(startDate).format('LL'),
                 "end_date" : moment(endDate).format('LL'),
             }
             swal({
                 title: "Are you sure?",
-                text: "Are you sure that you want to Start "+league_name+ " for "+currentSeason,
+                text: "Are you sure that you want to Start "+leaguename+ " for "+currentSeason,
                 icon: "warning",
                 buttons: true,
                 dangerMode: true,
@@ -83,7 +85,7 @@ export default function SportHome(){
                 if (willTakeAction) {
                     User.saveDataToServer(formJson, "/startleague").then(
                         (response)=> {
-                            toast.success(league_name + " Started for this Season")
+                            toast.success(leaguename + " Started for this Season")
                             saveLeagueStart(true);
                             setOpen(false);
                         }
@@ -107,7 +109,7 @@ export default function SportHome(){
                     <div className="col-lg-12">
                         <div className="mb-2">
                            <div className="alert alert-info">
-                           <h6> Note that the <code>{league_name}</code> Data Below corresponds to the Current Season 2018/2019 </h6>
+                           <h6> Note that the <code>{leaguename}</code> Data Below corresponds to the Current Season 2018/2019 </h6>
                             </div>
                         </div>                        
                     </div>
@@ -118,7 +120,7 @@ export default function SportHome(){
             pageReady ? checkLeagueStart ? 
              <LeagueDisplay /> :
             <div className="d-flex justify-content-center col bg-info p-10"> 
-                    <h6 className="text-white">No League Started for {league_name} this Season</h6>
+                    <h6 className="text-white">No League Started for {leaguename} With ID {leagueid} this Season</h6>
                     <br />
                     <button className="btn btn-info ml-20" onClick={handleOpen}>Click here To Start</button>
              </div> : <div>Loading Please Wait ... ... .. .. .. ..</div>

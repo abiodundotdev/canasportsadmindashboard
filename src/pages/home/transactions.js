@@ -3,7 +3,7 @@ import {useRouter} from 'next/router'
 import { useEffect, useState } from 'react';
 import User from '../../services/User';
 import moment from 'moment';
-import { convertomoney } from './sports/football/components/appmethods';
+import { convertomoney } from '../../components/appmethods';
 import { LoadingSkeleton } from '../../components/skeleton';
 
 export default function Tranasactions(props){

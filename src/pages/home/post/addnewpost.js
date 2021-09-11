@@ -13,7 +13,6 @@ import {toast} from 'react-toastify'
 import User from '../../../services/User';
 import { InputLabel, MenuItem, Select } from '@material-ui/core';
 import ScaleLoader from "react-spinners/ScaleLoader";
-import { getclubname } from '../sports/football/components/appmethods';
 import moment from 'moment';
 
 

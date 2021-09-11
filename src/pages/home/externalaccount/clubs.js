@@ -10,9 +10,9 @@ import swal from 'sweetalert';
 import {FcViewDetails} from 'react-icons/fc'
 import User from '../../../services/User';
 import Modal from "react-bootstrap/Modal";
-import { getclubname } from '../sports/football/components/appmethods';
+import { getclubname } from '../../../components/appmethods';
 import { AdminSkeleton, ClubSkeleton, LoadingSkeleton } from '../../../components/skeleton';
-import ClubCard from './clubcard';
+import ClubCard from '../../../components/clubcard';
 
 export default function Players(props){
     const [amount, setAmount] = useState(0);

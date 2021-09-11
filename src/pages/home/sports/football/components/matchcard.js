@@ -18,7 +18,7 @@ function MatchCard({footbaldata,day}){
         <div className="table-responsive">
          <table className="table table-hover table-vcenter table_custom text-nowrap spacing5 text-nowrap mb-0">
          <tbody>
-            {footbaldata.map(  
+            {footbaldata?.map(  
                 (data)=>{
                     return (
                         <>

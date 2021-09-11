@@ -3,7 +3,7 @@ import "react-contexify/dist/ReactContexify.css";
 import { toast } from "react-toastify";
 import useSWR, {mutate,trigger} from 'swr'
 import User from "../../../../../services/User";
-import { matchStatusToString } from "./appmethods";
+import { matchStatusToString } from "../../../../../components/appmethods";
 import { CSVLink, CSVDownload } from "react-csv";
 import { useEffect, useState } from "react";
 import {useRouter} from 'next/router';

@@ -3,7 +3,7 @@ import { FaTrash } from "react-icons/fa"
 import { FcDeleteRow } from "react-icons/fc"
 import Skeleton from "react-loading-skeleton"
 import User from "../../../../../services/User"
-import { matchStatusToString } from "./appmethods"
+import { matchStatusToString } from "../../../../../components/appmethods"
 export default function MatchTable({matchdata}){
     const [club1, setClub1] = useState({})
     const [club2, setClub2] = useState({})

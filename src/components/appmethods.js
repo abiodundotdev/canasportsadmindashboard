@@ -1,35 +1,9 @@
 import {useRouter} from 'next/router'
 import useSWR, {mutate,trigger} from 'swr'
-import User from '../../../../../services/User'
+import User from '../services/User'
 export default function AppMethods(){
     return ["HEE", 'EYUEW']
 }
-export function getRouteData(){
-    const router = useRouter()
-    const { leagueid } = router.query
-    const spiltedid = leagueid?.split("-")
-    const leaguerealid = spiltedid[spiltedid.length - 1]
-    const stopAt = spiltedid.length - 1;
-    const league_name = spiltedid.slice(0,stopAt).toString().replace(",", " ").toUpperCase();
-    return {
-        'league_name' : league_name,
-        'league_id' : leaguerealid
-    }
-}
-
-export function getRouteDataCup(){
-    const router = useRouter()
-    var { cupid } = router.query
-    const spiltedid = cupid?.split("-")
-    const cuprealid = spiltedid[spiltedid?.length - 1]
-    const stopAt = spiltedid?.length - 1;
-    const cup_name = spiltedid.slice(0,stopAt).toString().toUpperCase();
-    return {
-        'cup_name' : cup_name,
-        'cup_id' : cuprealid
-    }
-}
-
 export function matchStatusToString(matchstatus,matchhalf){
     let spandata;
         if(matchstatus == 0 && matchhalf == 1){
@@ -57,8 +31,9 @@ export function getclubname(clubid){
         return clubdata;
 }
  export function getTeamPoints(teamid){
-    const  {league_name, league_id} = getRouteData();
-    const {data : listmatches} = useSWR("/listleaguematches/"+league_id, {refreshInterval: 500, refreshWhenHidden : true});
+    const router = useRouter()
+    var { leaguedata } = router.query
+    const {data : listmatches} = useSWR("/listleaguematches/"+leaguedata[1], {refreshInterval: 500, refreshWhenHidden : true});
     const foundasteamA = listmatches?.filter(
         (eachmatch) => eachmatch.team_a == teamid
     )

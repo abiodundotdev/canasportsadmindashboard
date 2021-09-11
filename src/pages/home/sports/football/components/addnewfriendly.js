@@ -6,7 +6,6 @@ import { useState, useEffect} from 'react'
 import {useRouter} from 'next/router'
 import 'react-datetime-picker/dist/DateTimePicker.css'
 import 'react-clock/dist/Clock.css'
-import {getRouteData} from './appmethods'
 import moment from 'moment';
 import User from '../../../../../services/User';
 import ScaleLoader from "react-spinners/ScaleLoader";

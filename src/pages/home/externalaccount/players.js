@@ -10,7 +10,7 @@ import swal from 'sweetalert';
 import {FcViewDetails} from 'react-icons/fc'
 import User from '../../../services/User';
 import Modal from "react-bootstrap/Modal";
-import { getclubname } from '../sports/football/components/appmethods';
+import { getclubname } from '../../../components/appmethods';
 import { LoadingSkeleton } from '../../../components/skeleton';
 import { FaFingerprint } from 'react-icons/fa';
 

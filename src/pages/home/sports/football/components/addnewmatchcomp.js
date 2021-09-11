@@ -6,7 +6,6 @@ import { useState, useEffect} from 'react'
 import {useRouter} from 'next/router'
 import 'react-datetime-picker/dist/DateTimePicker.css'
 import 'react-clock/dist/Clock.css'
-import {getRouteData} from './appmethods'
 import moment from 'moment';
 import User from '../../../../../services/User';
 import ScaleLoader from "react-spinners/ScaleLoader";
@@ -15,7 +14,8 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 export default function AddNewMatchCard({data}){
-const  {league_name , league_id} = getRouteData(); 
+const router = useRouter();
+const { leaguename, leagueid } = router.query; 
 const [team_a, seTeam_a] = useState("")
 const [team_b, seTeam_b] = useState("")
 const [team_a_name, seTeam_a_name] = useState("")
@@ -45,7 +45,7 @@ useEffect(
 
         let formJson = {
             "match_type" : 1,
-            "match_sub_type" :  league_id,
+            "match_sub_type" :  leagueid,
             "team_a" : team_a,
             "team_b" : team_b,
             "score_a" : 0,
@@ -161,7 +161,7 @@ useEffect(
         <div className="">
         <div class="form-group">
             <label for="exampleFormControlInput1">League Name</label>
-            <input name="league_name" onInput={handleFormInputChange} type="email" value={league_name} class="form-control" id="exampleFormControlInput1" readOnly/>
+            <input name="league_name" onInput={handleFormInputChange} type="email" value={leaguename} class="form-control" id="exampleFormControlInput1" readOnly/>
         </div>
             <Select options={teams} onChange={ (option) => { 
                 seTeam_a(option.id)

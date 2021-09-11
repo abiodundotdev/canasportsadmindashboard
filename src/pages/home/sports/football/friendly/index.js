@@ -2,7 +2,7 @@ import DashLayout from '../../../../../components/dashlayout'
 import User from '../../../../../services/User'
 import { useEffect, useState } from 'react';
 import LeagueDisplay from '../components/leaguepagedisplay'
-import {getRouteData} from '../components/appmethods';
+import {getRouteData} from '../../../../../components/appmethods';
 import swal from 'sweetalert';
 import {toast} from 'react-toastify'
 import { makeStyles } from '@material-ui/core/styles';

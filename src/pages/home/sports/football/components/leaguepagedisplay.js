@@ -16,7 +16,6 @@ import {useRouter} from 'next/router';
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated';
 import User from '../../../../../services/User';
-import {getRouteData} from './appmethods'
 import useSWR, {mutate,trigger} from 'swr'
 import {MdCancel,MdDeleteForever} from 'react-icons/md'
 import { ToastContainer, toast } from 'react-toastify';
@@ -36,9 +35,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export default function LeagueDisplay() {
-    const  {league_name, league_id} = getRouteData();
-    const {data : listleagueclubs} = useSWR("/listcurrentleagueclub/"+league_id, {refreshInterval: 500, refreshWhenHidden : true});
-    const {data : listmatches} = useSWR("/listleaguematches/"+league_id, {refreshInterval: 500, refreshWhenHidden : true});
+    const router = useRouter();
+    const { leaguename, leagueid } = router.query;   
+    const {data : listleagueclubs} = useSWR("/listcurrentleagueclub/"+leagueid, {refreshInterval: 500, refreshWhenHidden : true});
+    const {data : listmatches} = useSWR("/listleaguematches/"+leagueid, {refreshInterval: 500, refreshWhenHidden : true});
     const {data : listallclubs} = useSWR("/listallclubs");
     const [calenderValue, onCalenderChange] = useState(new Date());
     const today = Date.now();
@@ -248,7 +248,7 @@ export default function LeagueDisplay() {
 <div className="card p-2">
     <div className="d-flex justify-content-between">
         <button onClick={ ()=> setShowModal(true) } className="btn btn-primary font-medium"><i><CgPlayListAdd /></i> <span>Add Match</span></button>
-        <Link href={"/home/sports/football/league/listmatches?leagueid="+league_id+"&name="+league_name}><button className="btn btn-info font-medium"><i><FaListAlt /></i> <span>List Matches</span></button></Link>
+        <Link href={"/home/sports/football/league/listmatches?leagueid="+leagueid+"&name="+leaguename}><button className="btn btn-info font-medium"><i><FaListAlt /></i> <span>List Matches</span></button></Link>
         <button onClick={
             () => {
             setShowModal(true)
@@ -384,7 +384,7 @@ export default function LeagueDisplay() {
 }
 
 function AddClubCard(){
-    const  {league_name , league_id} = getRouteData();    
+    const  {leaguename , leagueid} = useRouter().query;    
     const [clublist, SetClubList] = useState([])
     const [dbClub, setDbClub] = useState([])
     const animatedComponents = makeAnimated();
@@ -393,13 +393,13 @@ function AddClubCard(){
     const formJson = {
         'club_id' : clublist,
         'match_type' : 1,
-        'match_sub_type' : league_id,
+        'match_sub_type' : leagueid,
         'season' : '2018/2019'
     }
    
      useEffect(
         () => { 
-            User.getServerData("/clublistingforleague/"+league_id).then(
+            User.getServerData("/clublistingforleague/"+leagueid).then(
                 (response) => {
                     console.log(response.data)
                     response.data.map( (data) => {

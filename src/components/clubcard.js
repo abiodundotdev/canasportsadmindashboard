@@ -3,8 +3,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaListAlt } from "react-icons/fa";
-import { CLUB_LOGO_URL } from "../../../includes/constants";
-import User from "../../../services/User";
+import { CLUB_LOGO_URL } from "../includes/constants";
+
+import User from "../services/User";
 export default function ClubCard({data}){
     const [allmatches, setAllMatches] = useState(0)
     useEffect(
