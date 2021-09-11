@@ -12,8 +12,12 @@ export default {
         return Api.post("/admin-login",form);
     },
     async saveDataToServer(formData,url){
+        const token = localStorage?.getItem("userToken");
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        }; 
         await this.getCookie();
-        return Api.post(url,formData);
+        return Api.post(url,formData, config);
     },
     async uploadFile(formData,url,config){
         await this.getCookie();
@@ -24,13 +28,21 @@ export default {
         return Api.post("/logout");
     },
     getUser(){
-        return Api.get("/user");
+        const token = localStorage?.getItem("userToken");
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        }; 
+        return Api.get("/user", config);
     },
     getUserData(url){
         return Api.get(url);
     },
     getServerData(url){
-        return Api.get(url);
+        const token = localStorage?.getItem("userToken");
+        const config = {
+            headers: { Authorization: `Bearer ${token}` }
+        };        
+        return Api.get(url, config);
     },
     deleteDatafromServerUsingId(url){
         return Api.get(url);

@@ -63,6 +63,7 @@ export default function Home() {
               // storeUser(JSON.stringify(res.data.user))
                 localStorage.setItem("userAuth", JSON.stringify(res.data.user));
                 localStorage.setItem("current_season", res.data.current_season);
+                localStorage.setItem("userToken", res.data.token)
                 localStorage.setItem("isLoggedIn", true)
                 dispatch(AppActions.setUser(res.data.user.name))
                 dispatch(AppActions.setUserLogged(true))
