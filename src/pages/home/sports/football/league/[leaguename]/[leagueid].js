@@ -55,7 +55,7 @@ export default function SportHome(){
         {
       setPageReady(true)
       setCurrentSeason(localStorage.getItem("current_season"))
-           User.getServerData("/checkleague/"+leagueid)
+           User.getServerData("/checkleague/87653")
             .then( (response)=>{
                 saveLeagueStart(true);
             })
