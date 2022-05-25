@@ -331,7 +331,7 @@ export default function LeagueDisplay() {
                              <>
                             <tr>
                                 <td>{index+1}</td>
-                                <td>{getClubName(club.club_id)}</td>
+                                <td>{club.club_name}</td>
                                 <td>{getTeamPoints(club.club_id)[7]}</td>
                                 <td>{getTeamPoints(club.club_id)[4]}</td>
                                 <td>{getTeamPoints(club.club_id)[6]}</td>
@@ -391,7 +391,7 @@ function AddClubCard(){
     const optionsdb = []
     
     const formJson = {
-        'club_id' : clublist,
+        'club_id' : clublist.map((e) => e.id),
         'match_type' : 1,
         'match_sub_type' : leagueid,
         'season' : '2018/2019'
@@ -446,10 +446,10 @@ function AddClubCard(){
                         const action = response.action
                         switch(action){
                             case  "select-option":
-                                SetClubList(oldArray => [...oldArray, response.option.value])
+                                SetClubList(oldArray => [...oldArray, {'id' : response.option.id, 'name' : response.option.value}])
                                 break;
                             case "remove-value":
-                                const arr = clublist.filter(item => item !== response.removedValue.value)
+                                const arr = clublist.filter(item => item.name !== response.removedValue.value)
                                 SetClubList(arr)
                                 break;
                             case "clear":
@@ -472,7 +472,7 @@ function AddClubCard(){
                {clublist.length <= 0 ? <h5>Clubs Not Selected Yet</h5> : 
                clublist.map( 
                    (value) => {
-                       return <Button  className="mr-2" variant="outlined" style={{backgroundColor : 'teal', color : 'white'}}>{value}</Button>
+                       return <Button  className="mr-2" variant="outlined" style={{backgroundColor : 'teal', color : 'white'}}>{value.name}</Button>
                    }
                )}
             </div> 
