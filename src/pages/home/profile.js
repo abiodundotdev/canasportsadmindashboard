@@ -84,6 +84,7 @@ export default function Dashbaord(props){
         function updateSeason(){
             User.saveDataToServer({"season" : season1+"/"+season2}, "/updateseason").then(
                 (response)=> {
+                    localStorage.setItem('current_season',  season1+"/"+season2)
                     toast.success("Season Updated Successully")
                 }
             ).catch(
