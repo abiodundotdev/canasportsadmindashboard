@@ -53,6 +53,9 @@ export default function SportHome(){
     useEffect(
         () => 
         {
+             if(!leagueid) {
+      return;
+    }
       setPageReady(true)
       setCurrentSeason(localStorage.getItem("current_season"))
            User.getServerData("/checkleague/"+leagueid)
@@ -63,7 +66,7 @@ export default function SportHome(){
                 saveLeagueStart(false);
             })
         
-        },[]
+        },[leagueid]
         )
 
         function startLeague(){
