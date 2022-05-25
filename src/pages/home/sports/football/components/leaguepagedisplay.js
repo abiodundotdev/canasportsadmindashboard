@@ -391,7 +391,7 @@ function AddClubCard(){
     const optionsdb = []
     
     const formJson = {
-        'club_id' : clublist.map((e) => e.id),
+        'club_id' : clublist,
         'match_type' : 1,
         'match_sub_type' : leagueid,
         'season' : '2018/2019'
@@ -420,7 +420,7 @@ function AddClubCard(){
                     console.log(err)
                 }
             )
-        }
+        },[]
     )
 
     const handleSubmit = () => {
@@ -446,7 +446,7 @@ function AddClubCard(){
                         const action = response.action
                         switch(action){
                             case  "select-option":
-                                SetClubList(oldArray => [...oldArray, {'id' : response.option.id, 'name' : response.option.value}])
+                               // SetClubList(oldArray => [...oldArray, {'id' : response.option.id, 'name' : response.option.value}])
                                 break;
                             case "remove-value":
                                 const arr = clublist.filter(item => item.name !== response.removedValue.value)
@@ -472,7 +472,7 @@ function AddClubCard(){
                {clublist.length <= 0 ? <h5>Clubs Not Selected Yet</h5> : 
                clublist.map( 
                    (value) => {
-                       return <Button  className="mr-2" variant="outlined" style={{backgroundColor : 'teal', color : 'white'}}>{value.name}</Button>
+                       return <Button  className="mr-2" variant="outlined" style={{backgroundColor : 'teal', color : 'white'}}>{value?.name}</Button>
                    }
                )}
             </div> 
