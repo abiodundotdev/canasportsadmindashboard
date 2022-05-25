@@ -109,7 +109,7 @@ export default function SportHome(){
                     <div className="col-lg-12">
                         <div className="mb-2">
                            <div className="alert alert-info">
-                           <h6> Note that the <code>{leaguename}</code> Data Below corresponds to the Current Season 2018/2019 </h6>
+                           <h6> Note that the <code>{leaguename}</code> Data Below corresponds to the Current Season {currentSeason} </h6>
                             </div>
                         </div>                        
                     </div>
