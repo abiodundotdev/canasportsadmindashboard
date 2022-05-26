@@ -125,8 +125,8 @@ return (
                         <th scope="col"><small>Team 2</small></th>
                         <th scope="col"><small>Scores</small></th>
                         <th scope="col"><small>Points</small></th>
-                        <th scope="col"><small>Time(GMT)</small></th>
                         <th scope="col"><small>Date</small></th>
+                        <th scope="col"><small>Time(GMT)</small></th>
                         <th scope="col"><small>Status</small></th>
                         </tr>
                     </thead>
