@@ -44,7 +44,6 @@ export default function TicketHistory(props){
                                                 <th>Number of Seats</th>
                                                 <th>Amount</th>
                                                 <th>Booked Tickets</th>
-                                                <th>Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -57,7 +56,6 @@ export default function TicketHistory(props){
                                                     <td>{eachdata.nticket}</td>
                                                     <td>{eachdata.price}</td>
                                                     <td>0</td>
-                                                    <td><span class="tag tag-success">Sold Out</span></td>
                                                 </tr>
                                                   )
                                               } 

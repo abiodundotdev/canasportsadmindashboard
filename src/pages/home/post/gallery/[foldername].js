@@ -145,7 +145,11 @@ export default function SportHome(){
                             </div>
                         
                         <div class="d-flex justify-content-between">
-                                <><button className="btn btn-success"><i> <FaTrash /> </i> Delete </button></>
+                                <>
+      {
+        //<button className="btn btn-success"><i> <FaTrash /> </i> Delete </button>
+      }
+                                </>
                                 <>
                                 <CopyToClipboard text={"https://canasports.s3.us-east-2.amazonaws.com/admin_uploaded_files/"+eachdata?.file_url} onCopy={copyToClip}>
                                 <button className="btn btn-danger" title="Copy to ClipBoard"><i> <FaClipboard /> </i> Copy Link</button>

@@ -37,8 +37,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function LeagueDisplay() {
     const router = useRouter();
     const { leaguename, leagueid } = router.query;   
-    const {data : listleagueclubs} = useSWR("/listcurrentleagueclub/"+leagueid, {refreshInterval: 500, refreshWhenHidden : true});
-    const {data : listmatches} = useSWR("/listleaguematches/"+leagueid, {refreshInterval: 500, refreshWhenHidden : true});
+    const {data : listleagueclubs} = useSWR("/listcurrentleagueclub/"+leagueid, {refreshInterval: 1000, refreshWhenHidden : true});
+    const {data : listmatches} = useSWR("/listleaguematches/"+leagueid, {refreshInterval: 1000, refreshWhenHidden : true});
     const {data : listallclubs} = useSWR("/listallclubs");
     const [calenderValue, onCalenderChange] = useState(new Date());
     const today = Date.now();
@@ -387,6 +387,7 @@ function AddClubCard(){
     const  {leaguename , leagueid} = useRouter().query;    
     const [clublist, SetClubList] = useState([])
     const [dbClub, setDbClub] = useState([])
+    const [SetSeason, season] = useState("")
     const animatedComponents = makeAnimated();
     const optionsdb = []
     
@@ -394,25 +395,32 @@ function AddClubCard(){
         'club_id' : clublist,
         'match_type' : 1,
         'match_sub_type' : leagueid,
-        'season' : '2018/2019'
+        'season' : season
     }
+
+
+    useEffect(
+        ()=>{
+            // SetSeason(localStorage.getItem("current_season"))
+        },[])
    
      useEffect(
         () => { 
-            User.getServerData("/clublistingforleague/"+leagueid).then(
+            if(!leagueid) {
+                return;
+              }
+            User.getServerData("/clublistingforleague/87653").then(
                 (response) => {
-                    console.log(response.data)
                     response.data.map( (data) => {
                         optionsdb.push(
                             {
                                 'value' : data.team_name,
                                 'label' : data.team_name,
-                                'id' :  data.club_id
+                                'id' :  data.id
                             }
                         )
                     }
                     )
-                    //alert(optionsdb[0].value)
                     setDbClub(optionsdb) 
                 }
             ).catch(
@@ -420,7 +428,7 @@ function AddClubCard(){
                     console.log(err)
                 }
             )
-        },[]
+        }
     )
 
     const handleSubmit = () => {
@@ -433,7 +441,6 @@ function AddClubCard(){
                toast.error("Error Occcur Check Inputs") 
             }
         )
-        //trigger(baseURL+"/listcurrentleagueclub/"+league_id)
     }
      
 
@@ -446,7 +453,7 @@ function AddClubCard(){
                         const action = response.action
                         switch(action){
                             case  "select-option":
-                               // SetClubList(oldArray => [...oldArray, {'id' : response.option.id, 'name' : response.option.value}])
+                               SetClubList(oldArray => [...oldArray, {'id' : response.option.id, 'name' : response.option.value}])
                                 break;
                             case "remove-value":
                                 const arr = clublist.filter(item => item.name !== response.removedValue.value)
