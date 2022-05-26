@@ -63,9 +63,9 @@ export default function SportHome(){
     const handlePostSubmit = () => {
         setFormSubmitted(true)
         setFormDisabled(true)
-        User.saveDataToServer(formJson, "/savepost").then(
+        User.saveDataToServer(formJson, "/notifyuser").then(
             (resposne)=> {
-                toast.success("Post Save Successfully")
+                toast.success("Message sent Successfully")
                 setFormDisabled(false)
                 setFormSubmitted(false)
             }
@@ -148,9 +148,11 @@ export default function SportHome(){
 <InputLabel id="demo-simple-select-label">Choose Mode</InputLabel>
     <select className="form-control" onChange={(e)=>setmsgMode(e.target.value)}>
         <option value="all">Send to All Users</option>
-        <option value="sub">Send to Subscribed Users</option>
-        <option value="school">Send to Team/School Owners</option>
-        <option value="mobile">Send to Mobile Applications</option>
+       { 
+       //<option value="sub">Send to Subscribed Users</option> 
+        //<option value="school">Send to Team/School Owners</option>
+        //<option value="mobile">Send to Mobile Applications</option>
+        }
     </select>
 </div>
 {msgMode}
