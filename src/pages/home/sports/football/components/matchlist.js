@@ -66,7 +66,7 @@ function handleSubItemClick(action,match){
             if (willTakeAction) {
 
     var defaultaction = ""
-    const match_db_id = match?.match_id;
+    const match_db_id = match?.id;
        switch (action) {
            case "startfirsthalf":
                defaultaction = "startfirsthalf"
