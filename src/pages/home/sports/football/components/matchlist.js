@@ -149,7 +149,7 @@ return (
                             <td>{match.club_two.team_name}</td>
                             <td>{match.score_a + " - "+ match.score_b}</td>
                             <td>{match.point_a + " - "+ match.point_b}</td>
-                            <td>{moment(match.match_day).format('MMMM Do YYYY, h:mm a')}</td>
+                            <td>{moment(match.match_day).format('MMMM Do YYYY')}</td>
                             <td>{match.match_time}</td>
                             <td>{matchStatusToString(match.status,match.match_half)}</td> 
                        
