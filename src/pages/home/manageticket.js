@@ -101,7 +101,7 @@ export default function Dashbaord(props){
     <div class="card-body">
         <div class="form-row">
             <div class="col-9">
-            <input type="text" onInput={(e)=>setTicketId(e.target.value)} class="form-control" placeholder="Ticket Id or Tell User To Place Incoice at the Scanner" />
+            <input type="text" onInput={(e)=>setTicketId(e.target.value)} class="form-control" placeholder="Ticket Id or Tell User To Place Invoice at the Scanner" />
             </div>
             <div class="col">
            <button onClick={getTicketData} class="btn btn-primary" disabled={bDisabled}>{bottonText}</button>

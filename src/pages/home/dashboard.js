@@ -174,7 +174,7 @@ export default function Dashboard(){
                             </div>
                             <div className="card-body">
                             <Button variant="secondary" onClick={()=> setOpenModal(true)}>
-                                                Genetate Ticket
+                                                Generate Ticket
                             </Button>
 
                             <Button variant="primary" onClick={()=> setOpenUpdateModal(true)}>

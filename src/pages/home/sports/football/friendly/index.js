@@ -58,7 +58,7 @@ export default function SportHome(){
 
                 <MatchListCard day="Not Played" matchdata={fetchedData.not_played} isitemfounded={founditem} />
 
-                <MatchListCard day="Played" matchdata={fetchedData.played} isitemfounded={founditem} />
+                <MatchListCard day="Played/Active" matchdata={fetchedData.played} isitemfounded={founditem} />
             </div>
 
             <div className="col-lg-5">
