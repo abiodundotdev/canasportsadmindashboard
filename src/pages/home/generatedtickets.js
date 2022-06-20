@@ -109,10 +109,12 @@ export default function GenerateTicket(props){
                     <thead>
                         <tr>
                         <th scope="col" ><small>Id</small></th>
-                        <th scope="col" rowSpan="1" title="Points"><small>Day</small></th>
-                        <th scope="col" rowSpan="1" title="Goal Difference"><small>Reservable Tickets</small></th>
-                        <th scope="col" rowSpan="1" title="Points"><small>Time</small></th>
-                        <th scope="col" rowSpan="1" title="Points"><small>Pitch</small></th>
+                        <th scope="col" rowSpan="1" title="Points"><small>Date</small></th>
+                        <th scope="col" rowSpan="1" title="Goal Difference"><small> Units</small></th>
+                        <th scope="col" rowSpan="1" title="Points"><small>Amount</small></th>
+                        <th scope="col" rowSpan="1" title="Points"><small>Units reserved</small></th>
+                        <th scope="col" rowSpan="1" title="Points"><small>Units left</small></th>
+                        <th scope="col" rowSpan="1" title="Points"><small>Description</small></th>
                         <th scope="col" rowSpan="1" title="Action"><small>Action</small></th>
                         </tr>
                     </thead>
@@ -129,7 +131,7 @@ export default function GenerateTicket(props){
                                          <td>{eachdata.pitch}</td>
                                           <td className="btn-group">
                                               <button style={{fontSize : "10px"}} onClick={()=>ongenerateclick(eachdata)} className="btn btn-primary btn-sm">Generate Ticket</button>
-                                              <a style={{fontSize : "10px"}} className="btn btn-warning btn-sm">Ticket History</a>
+                                              <a style={{fontSize : "10px"}} className="btn btn-warning btn-sm">Update</a>
                                           </td>
                                     </tr>
                                   )

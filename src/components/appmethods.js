@@ -11,9 +11,9 @@ export function matchStatusToString(matchstatus,matchhalf){
         }else if(matchstatus == 0 && matchhalf == 2){
             spandata = <span class="tag tag-danger"><small>FT</small></span>
         }else if(matchstatus == 1 && matchhalf == 1){
-            spandata = <span class="tag tag-info"><small>FHIP</small></span>
+            spandata = <span class="tag tag-info"><small>LIVE</small></span>
         }else if(matchstatus == 1 && matchhalf == 2){
-            spandata = <span class="tag tag-info"><small>SHIP</small></span>
+            spandata = <span class="tag tag-info"><small>LIVE</small></span>
         }else{
             spandata = <span class="tag tag-primary"><small>NP</small></span>
         }
