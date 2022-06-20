@@ -23,7 +23,7 @@ export default function Groups(props){
     const [disable, setDisable] = useState(false)
     const [pageReady, setPageReady] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
-    const [showPerPage, setPostPerPage] = useState(1)
+    const [showPerPage, setPostPerPage] = useState(10)
     const [smodal, showDataModal] = useState(false)
     const [showViewer, setShowViewer] = useState(false)
     const [selectedplayer, setSelectedPlayer]= useState({})
@@ -32,9 +32,9 @@ export default function Groups(props){
     const indexOfFirstUser = indexOfLastUser - showPerPage
 
     const images = [
-        UPLOAD_URL_DIR_PICTURE.concat(selectedplayer?.director_pic),
-        UPLOAD_URL_ID.concat(selectedplayer?.director_identity),
-        UPLOAD_URL_LOGO.concat(selectedplayer?.club_logo)
+      selectedplayer?.director_pic,
+      selectedplayer?.director_identity,
+      selectedplayer?.club_logo
       ];
 
       const openImageViewer = useCallback((index) => {
@@ -163,6 +163,16 @@ return(
 
 <div className="table-responsive" id="users">
 <table className="table table-hover table-vcenter text-nowrap table_custom border-style list">
+
+<thead>
+    <tr>
+    <th scope="col"><small></small></th>
+    <th scope="col"><small>Group manager</small></th>
+    <th scope="col"><small>Address (Status)</small></th>
+    <th scope="col"><small>Action </small></th>
+    </tr>
+</thead>
+
 <tbody>
    {
     userstoshow?.map( (eachuser)=> {
@@ -170,11 +180,6 @@ return(
             <tr className="">
             <td className="width35 hidden-xs">
                 <a className="mail-star"><i className="fa fa-star"></i></a>
-            </td>
-            <td className="text-center width40">
-                <div className="avatar d-block">
-                    <img className="avatar" src="/user.jpg" alt="avatar" />
-                </div>
             </td>
             <td>
                 <div><a href="javascript:void(0);">{eachuser.sport_dir_name}</a></div>
@@ -189,9 +194,7 @@ return(
 
                 
             </td>
-            <td className="hidden-sm">
-                <div className="text-muted">  </div>                                                
-            </td>
+           
             <td className="text-right">
               <a className="btn btn-info btn-link" onClick={() => showModal(eachuser)} data-toggle="tooltip" title="View Identity"><i><FcViewDetails /></i></a>
                {

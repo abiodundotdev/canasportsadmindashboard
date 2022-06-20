@@ -8,6 +8,7 @@ import { CSVLink, CSVDownload } from "react-csv";
 import { useEffect, useState } from "react";
 import {useRouter} from 'next/router';
 import { LoadingSkeletonSmTable } from "../../../../../components/skeleton";
+import moment from "moment";
 
 export default function MatchListCard({matchdata, day, isitemfounded}){
 const {data : listallclubs} = useSWR("/listallclubs");
@@ -45,7 +46,7 @@ useEffect(
       
 function handleItemClick(match){
       return function({ event, props, triggerEvent, data }){
-        const match_db_id = match?.match_id;
+        const match_db_id = match?.id;
         approuter.push("/home/sports/football/matchupdate/"+match_db_id)
       }
 }
@@ -109,7 +110,9 @@ return (
         <div className="card">
                 <div className="card-header d-flex justify-content-between bg-primary">
                     <h6 className="card-title text-white">{day}</h6>
-                    <CSVLink className="btn btn-primary" filename={"CanaSportsNgMatches_"+day+".csv"} data={csv_data}>Export</CSVLink>
+                    {
+                    //  <CSVLink className="btn btn-primary" filename={"CanaSportsNgMatches_"+day+".csv"} data={csv_data}>Export</CSVLink>
+                    }
                     <kbd>Right Click For Menu</kbd>
         </div>
         <div className="card-body">
@@ -141,28 +144,28 @@ return (
                       { matchdata?.length <= 0 ? <div>Matches Not Found</div> : " "}
                             <tr key={match.match_id} onContextMenu={displayMenu("menu_"+match.match_id)}>
                             <td>{index+1}</td>
-                            <td>{getClubName(match.team_a)}</td> 
-                            <td>{getClubName(match.team_b)}</td>
+                            <td>{match.club_one.team_name}</td> 
+                            <td>{match.club_two.team_name}</td>
                             <td>{match.score_a + " - "+ match.score_b}</td>
                             <td>{match.point_a + " - "+ match.point_b}</td>
-                            <td>{match.match_day}</td>
+                            <td>{moment(match.match_day).format('MMMM Do YYYY, h:mm a')}</td>
                             <td>{match.match_time}</td>
                             <td>{matchStatusToString(match.status,match.match_half)}</td> 
                        
                 <Menu id={"menu_"+match?.match_id}>
                         
                         <Item>
-                        Manage {getClubName(match.team_a) + " VS " + getClubName(match.team_b)}
+                        Manage {match.club_one.team_name + " VS " + match.club_two.team_name}
                         </Item>
                         <Separator />
 
                         <Item onClick={handleItemClick(match)}>
-                        Live Update of {getClubName(match.team_a) + " VS " + getClubName(match.team_b)}
+                        Live Update of {match.club_one.team_name + " VS " + match.club_two.team_name}
                         </Item>
                         <Separator />
 
                         <Item>
-                        Update {getClubName(match.team_a) + " VS " + getClubName(match.team_b)}    
+                        Update {match.club_one.team_name + " VS " + match.club_two.team_name}    
                         </Item>
                         <Separator />
 

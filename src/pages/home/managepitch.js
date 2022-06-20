@@ -108,8 +108,8 @@ export default function Dashbaord(props){
 
 
                 <div className="form-group">
-                    <label for="formGroupExampleInput">Height</label>
-                    <input type="number" value={height} onInput={(e) => setHeight(e.target.value)} className="form-control" id="height" placeholder="Height" />
+                    <label for="formGroupExampleInput">Length</label>
+                    <input type="number" value={height} onInput={(e) => setHeight(e.target.value)} className="form-control" id="height" placeholder="Length" />
                 </div>
 
                 <div className="form-group">
@@ -138,16 +138,15 @@ export default function Dashbaord(props){
                         <tr>
                         <th scope="col" ><small>Name</small></th>
                         <th scope="col" rowSpan="1" title="Points"><small>Width</small></th>
-                        <th scope="col" rowSpan="1" title="Goal Difference"><small>Height</small></th>
+                        <th scope="col" rowSpan="1" title="Goal Difference"><small>Length</small></th>
                         <th scope="col" rowSpan="1" title="Points"><small>Description</small></th>
-                        <th scope="col" rowSpan="1" title="Action"><small>Action</small></th>
                         </tr>
                     </thead>
                     <tbody>
                       {
                           fetchedData?.map(
                               (eachdata) => {
-                                  return <tr> <td>{eachdata.name}</td> <td>{eachdata.width}</td> <td>{eachdata.height}</td> <td>{eachdata.description}</td> <td><i><FaTrash /></i></td> </tr>
+                                  return <tr> <td>{eachdata.name}</td> <td>{eachdata.width}</td> <td>{eachdata.height}</td> <td>{eachdata.description}</td> </tr>
                               }
                           )
                       }

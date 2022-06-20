@@ -13,18 +13,17 @@ import moment from 'moment'
 import "react-datepicker/dist/react-datepicker.css";
 import { useRouter } from 'next/router';
 
-
 export default function SportHome(){
-
     const router = useRouter();
     const { leaguename, leagueid } = router.query; 
     const [checkLeagueStart, saveLeagueStart] = useState(false) 
     const [pageReady, setPageReady] = useState(false) 
     const [currentSeason, setCurrentSeason] = useState("")
     const [open, setOpen] = useState(false)
+    const [choosenCurrentSeason, setChoosenCurrentSeason] = useState("")
     const [startDate, setStartDate] = useState(new Date());
     const [endDate, setEndDate] = useState(new Date());
-
+    const [years, setYears] = useState([])
 
     const useStyles = makeStyles((theme) => ({
         modal: {
@@ -49,6 +48,18 @@ export default function SportHome(){
     const handleClose = () => {
     setOpen(false);
     };
+    useEffect(
+      ()=> {
+        let currentYear  = moment().year;
+        let stopAt = 5;
+        let emptyArray = []
+        for (let index = 0; index < stopAt; index++) {
+          emptyArray.push(currentYear +1)
+        }
+
+
+      }
+    ,[])
 
     useEffect(
         () => 
@@ -59,8 +70,13 @@ export default function SportHome(){
       setPageReady(true)
       setCurrentSeason(localStorage.getItem("current_season"))
            User.getServerData("/checkleague/"+leagueid)
-            .then( (response)=>{
+            .then((response)=>{
+              var data = response.data.data;
+              if(data == null){
+                saveLeagueStart(false);
+              }else{
                 saveLeagueStart(true);
+              }
             })
             .catch((response)=>{
                 saveLeagueStart(false);
@@ -73,9 +89,10 @@ export default function SportHome(){
             const formJson = {
                 "league_id" : leagueid,
                 "league_type" : leagueid,
-                "league_season" :currentSeason,
+                "league_season" : choosenCurrentSeason,
                 "start_date" : moment(startDate).format('LL'),
                 "end_date" : moment(endDate).format('LL'),
+                "status" : 1
             }
             swal({
                 title: "Are you sure?",
@@ -94,6 +111,7 @@ export default function SportHome(){
                         }
                     ).catch(
                         (err)=>{
+                          saveLeagueStart(false);
                             toast.error("Something Went Wrong")
                         }
                     )
@@ -144,10 +162,17 @@ export default function SportHome(){
       >
         <Fade in={open}>
           <div className={classes.paper}>
-              <h6>Please choose the start/End Date</h6>
+          <div className="form-group">
+            <label for="formGroupExampleInput">Select season</label>
+            <select className='form-control' onChange={ (e) => setChoosenCurrentSeason(e.target.value)}>
+                {
+                  [...Array(7)].map( (x, i) =>  <option value={ `${2020 + i}/${2020 + i +1}`}>{ `${2020 + i}/${2020 + i +1}`}</option> )
+                }
+              </select>
+            </div>
         <div className="form-group">
             <label for="formGroupExampleInput">Start Date</label>
-            <br />
+        <br />
           <DatePicker className="form-control" selected={startDate} onChange={date => setStartDate(date)} />
         </div>
 

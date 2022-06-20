@@ -23,7 +23,7 @@ export default function Schools(props){
     const [disable, setDisable] = useState(false)
     const [pageReady, setPageReady] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
-    const [showPerPage, setPostPerPage] = useState(1)
+    const [showPerPage, setPostPerPage] = useState(10)
     const [smodal, showDataModal] = useState(false)
     const [showViewer, setShowViewer] = useState(false)
     const [selectedplayer, setSelectedPlayer]= useState({})

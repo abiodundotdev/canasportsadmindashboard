@@ -57,18 +57,20 @@ function LeftSideBar({title}){
                 <li className={router.pathname == "/home/profile" ? "active" : ""}><Link href="/home/profile"><a><i className="fa fa-user"></i><span>Profile</span></a></Link></li>
                 
                 {
-                    userData?.role == "ticket" || userData?.role == "super"   ?
+                   userData?.role == "ticket" || userData?.role == "super"   ?
                 <>
                 <li className="g_heading" key="6">Ticket Management</li>
                 <li className={router.pathname == "/home/manageticket" ? "active" : ""}><Link href="/home/manageticket" key="7"><a><i className="fa fa-ticket-alt"></i><span>Manage Ticket</span></a></Link></li>
                 <li className={router.pathname == "/home/tickethistory" ? "active" : ""}><Link href="/home/tickethistory" key="8"><a><i className="fa fa-clipboard-list"></i><span>Ticket History</span></a></Link></li>
-                <li className={router.pathname == "/home/generateticket" ? "active" : ""}><Link href="/home/generateticket" key="9"><a><i><GiTicket /></i><span>Generate Ticket for Match</span></a></Link></li>
+               {
+               // <li className={router.pathname == "/home/generateticket" ? "active" : ""}><Link href="/home/generateticket" key="9"><a><i><GiTicket /></i><span>Generate Ticket for Match</span></a></Link></li>
+               }
                 </>
                 : ""
                 }
                 
                 {
-                    userData?.role == "post" || userData?.role == "super"    ?
+                   userData?.role == "post" || userData?.role == "super"    ?
                 <>
                 <li className="g_heading" key="6">Posts </li>
                 <li className={router.pathname == "/home/post" ? "active" : ""}><Link href="/home/post" key="7"><a><i><BsNewspaper /></i><span>All Post</span></a></Link></li>
@@ -76,7 +78,7 @@ function LeftSideBar({title}){
                 <li className={router.pathname == "/home/post/category" ? "active" : ""}><Link href="/home/post/category" key="8"><a><i><AiOutlineGroup /></i><span>Category</span></a></Link></li>
                 <li className={router.pathname == "/home/post/gallery" ? "active" : ""}><Link href="/home/post/gallery" key="8"><a><i><FcGallery /></i><span>File Manager</span></a></Link></li>
                 </>
-                : ""
+               : ""
                 }
                 
                 {
@@ -93,11 +95,10 @@ function LeftSideBar({title}){
                 }                  
 
                 <li className="g_heading" key="6">Messaging / Notification</li>
-                <li className={router.pathname == "/home/sendnew" ? "active" : ""}><Link href="/home/sendnew" key="7"><a><i><BiMessageAdd /></i><span>Send New</span></a></Link></li>
-                <li className={router.pathname == "/home/usernotifier" ? "active" : ""}><Link href="/home/usernotifier" key="7"><a><i><FaMailBulk /></i><span>Messages</span></a></Link></li>
+                <li className={router.pathname == "/home/sendnew" ? "active" : ""}><Link href="/home/sendnew" key="7"><a><i><BiMessageAdd /></i><span>Send Group Mail</span></a></Link></li>
                  
                 {
-                    userData?.role == "match" || userData?.role == "super"    ?
+                   userData?.role == "match" || userData?.role == "super"    ?
                 <>
                 <li className="g_heading" key="9">Football Manager</li>
                 {
@@ -106,7 +107,6 @@ function LeftSideBar({title}){
                 })
                  }
                 <li key="20"><Link href="/home/managepitch"><a><i><GiFootyField /></i><span>Manage Pitch</span></a></Link></li>
-
                 </>
                 : ""
                 }

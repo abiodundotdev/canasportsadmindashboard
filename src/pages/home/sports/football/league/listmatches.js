@@ -91,7 +91,7 @@ export default function ListMatchesLeague(){
   </thead>
 <tbody>
     {
-     fetchedData?.map(
+  fetchedData.length == 0 ? <tr><td>No record found</td></tr>  :  fetchedData?.map(
             (eachmatch) => {
                 return (<MatchTable matchdata={eachmatch} />)
             }

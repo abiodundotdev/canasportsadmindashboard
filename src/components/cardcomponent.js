@@ -17,11 +17,6 @@ export default function CustomDataCard({data, url}){
                                 <h3 className="card-title">{data?.league_name}</h3>
                             </div>
                         <div className="card-body">
-                            <div className="d-flex justify-content-between">   
-                                 <h6 className="number mb-0 font-12 text-center">Matches</h6>
-                                <h6 className="number mb-0 font-12 text-center text-blue">10</h6>
-                            </div>
-
                             <div className="d-flex justify-content-between mt-10">   
                                  <h6 className="number mb-0 font-12 text-center">Teams</h6>
                                 <h6 className="number mb-0 font-12 text-center text-blue">{data?.team_number}</h6>

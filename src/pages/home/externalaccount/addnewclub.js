@@ -11,26 +11,22 @@ import User from '../../../../../services/User';
 import ScaleLoader from "react-spinners/ScaleLoader";
 import {FcAddDatabase} from 'react-icons/fc'
 import { ToastContainer, toast } from 'react-toastify';
+import DashLayout from '../../../components/dashlayout';
 
 
-export default function AddNewMatchCard({data}){
-const router = useRouter();
-const { leaguename, leagueid } = router.query; 
+export default function AddNewClub({data}){
 const [team_a, seTeam_a] = useState("")
 const [team_b, seTeam_b] = useState("")
-const [team_a_name, seTeam_a_name] = useState("")
-const [team_b_name, seTeam_b_name] = useState("")
 const [matchDay, setMatchDay] = useState("")
 const [matchDate, setMatchDate] = useState("")
 const [matchStamp, setMatchStamp] = useState("")
-const [duration, setDuration] = useState("")
 const [isFormSubmitted, setFormSubmitted] = useState(false)
 const [pitches, setPitches] = useState([])
 const [teams, setTeams] = useState([])
 const [selectPitch, setSelectedPitch] = useState("")
 const optionsPitch = []
 const optionsTeam = []
-const [formDisabled, setFormDisabled] = useState(false)
+const [formDisabled, setFormDisabled] = useState(true)
 
 useEffect(
     ()=> {
@@ -42,11 +38,11 @@ useEffect(
     },
 [team_a,team_b,matchDay,selectPitch])
 
-        const preloader = !formDisabled ? " ": <ScaleLoader height={15} color="white" /> 
+        const preloader = formDisabled ? <ScaleLoader height={15} color="white" />  : " " 
 
         let formJson = {
-            "match_type" : 1,
-            "match_sub_type" :  leagueid,
+            "match_type" : "234",
+            "match_sub_type" :  "",
             "team_a" : team_a,
             "team_b" : team_b,
             "score_a" : 0,
@@ -58,10 +54,8 @@ useEffect(
             "match_day" : matchDate,
             "match_time" : matchDay,
             "match_time_stamp" : matchStamp,
-            "pitch" : selectPitch,
-            "duration" : duration,
-            "teama_name" : team_a_name,
-            "teamb_name" : team_b_name
+            "match_season" : "2018/2019",
+            "pitch" : selectPitch
         }
 
 
@@ -83,12 +77,6 @@ useEffect(
 
 
     var [formData, setFormData] = useState({formJson});
-
-    const options = [
-        { value: 'Manchester', label: 'Manchester', id : 1},
-        { value: 'Chealsea', label: 'Chealsea', id : 2},
-        { value: 'Arsenal', label: 'Arsenal' ,id : 3}
-    ];
 
     useEffect(
         () => { 
@@ -112,30 +100,31 @@ useEffect(
                     console.log(err)
                 }
             )
-
-
-            User.getServerData("/listallclubs").then(
-                (response) => {
-                    console.log(response.data)
-                    response.data.map( (data) => {
-                        optionsTeam.push(
-                            {
-                                'value' : data?.team_name,
-                                'label' : data?.team_name,
-                                'id' :  data?.id
-                            }
-                        )
-                    }
-                    )
-                    setTeams(optionsTeam) 
-                }
-            ).catch(
-                (err) => {
-                    console.log(err)
-                }
-            )
         },[])
 
+        useEffect(
+            () => { 
+                User.getServerData("/listallclubs").then(
+                    (response) => {
+                        console.log(response.data)
+                        response.data.map( (data) => {
+                            optionsTeam.push(
+                                {
+                                    'value' : data?.team_name,
+                                    'label' : data?.team_name,
+                                    'id' :  data?.id
+                                }
+                            )
+                        }
+                        )
+                        setTeams(optionsTeam) 
+                    }
+                ).catch(
+                    (err) => {
+                        console.log(err)
+                    }
+                )
+            },[])
 
     const handleFormInputChange = (e) => {
           const field = e.target.getAttribute("name");
@@ -153,45 +142,43 @@ useEffect(
     }
 
     return (
-    <div className="card">
+   
+<DashLayout title="Add New Club">
+<div className="card">
     <div className="card-header">
-        <h2 className="card-title">Add New Match</h2>
+        <h2 className="card-title">Add New Club</h2>
     </div>
 
     <div className="card-body justify-content-">
         <div className="">
+
         <div class="form-group">
-            <label for="exampleFormControlInput1">League Name</label>
-            <input name="league_name" onInput={handleFormInputChange} type="email" value={leaguename} class="form-control" id="exampleFormControlInput1" readOnly/>
+            <input name="league_name"   placeholder='Team name' class="form-control" />
         </div>
-            <Select options={teams} onChange={ (option) => { 
-                seTeam_a(option.id)
-                seTeam_a_name(option.value) 
-                } } style={{fontSize : '20px'}} />
-            <h2 className="text-center">VS</h2>
-            <Select options={teams} onChange={ (option) => {
-                seTeam_b_name(option.value)
-                seTeam_b(option.id)
-            }
-            }/>
-            <br />
-            <span>Select Pitch for Match</span>
-            <Select options={pitches} onChange={ (option) => setSelectedPitch(option.value) }/>
-             <br />
-             <div className='form-group'>
-                    <input className='form-control' placeholder='Match Duration (Minutes)' value={duration} onInput={(e)=> setDuration(e.target.value)}></input>
-             </div>
-             <br />
-             <label>Start Time</label>
-            <DateTimePicker format="dd/MM/y h:mm:ss a" onChange={handleDateChange} value={dateValue} className="form-control" />
-            <div className="d-flex justify-content-center">
-                <button onClick={handleSubmit} className="btn btn-success mt-10 text-center d-flex" disabled={formDisabled}><i><FcAddDatabase /></i> <span className="mr-2"> ADD NEW MATCH</span></button>
-            </div>
+
+        <div class="form-group">
+            <input name="league_name"  placeholder='Logo Url' class="form-control" />
+        </div>
+
+        <div class="form-group">
+                <select className='form-control'>
+                    <option>Football</option>
+                    <option>Football</option>
+                </select>
+        </div>
+
+        <div class="form-group">
+            <input name="league_name"  value="Friendly Match" class="form-control"/>
+        </div>
+       
+       
         </div>
         
     </div>
 
 </div>
+
+</DashLayout>
 
     )
 }

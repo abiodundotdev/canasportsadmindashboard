@@ -1,8 +1,11 @@
+import moment from 'moment';
 import { useEffect, useState } from 'react';
 import DashLayout from '../../components/dashlayout';
 import User from '../../services/User';
 export default function TicketHistory(props){
     const [fetchedData, savefetchedData] = useState([])
+    const [currentPage, setCurrentPage] = useState(1)
+
     useEffect(
         () => {
            User.getServerData("/getallgenticket").then(
@@ -15,7 +18,7 @@ export default function TicketHistory(props){
                }
            )
         },[])
-
+        let number_of_page = Math.ceil(fetchedData?.length / 10)
     return(
         <DashLayout title="Ticket History">
         <div className="section-body mt-3">
@@ -23,7 +26,7 @@ export default function TicketHistory(props){
                 <div className="row clearfix">
                     <div className="col-lg-12">
                         <div className="mb-4">
-                            <h6>Match Ticket History</h6>
+                            <h6>Ticket History</h6>
                         </div>                        
                     </div>
                 </div>
@@ -40,10 +43,11 @@ export default function TicketHistory(props){
                                     <table class="table table-hover table-striped text-nowrap table-vcenter mb-0">
                                         <thead>
                                             <tr>
-                                                <th>Match ID</th>
-                                                <th>Number of Seats</th>
+                                                <th>ID</th>
+                                                <th>Date Created</th>
                                                 <th>Amount</th>
-                                                <th>Booked Tickets</th>
+                                                <th>Number of Seats</th>
+                                                <th>Units Booked/Reserved</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -52,10 +56,11 @@ export default function TicketHistory(props){
                                               (eachdata) => {
                                                   return (
                                                     <tr>
-                                                    <td>{eachdata.match_id}</td>
+                                                    <td>{eachdata.id}</td>
+                                                    <td>{moment(eachdata?.issued_at).format("LLLL")}</td>
+                                                    <td>{"₦ "+new Intl.NumberFormat().format(eachdata.price)}</td>
                                                     <td>{eachdata.nticket}</td>
-                                                    <td>{eachdata.price}</td>
-                                                    <td>0</td>
+                                                    <td>{eachdata.number_bought}</td>
                                                 </tr>
                                                   )
                                               } 
@@ -69,17 +74,24 @@ export default function TicketHistory(props){
                         </div>
                     </div>
 
-            
-        <div className="col-xl-2 col-lg-2 col-md-2">
-            <div className="card">
-                <div class="card-header">
-                    <h3 class="card-title">Sort</h3>
-            </div>    
-                   <label> <input type="radio" name="sort" /> All</label>
-                   <label> <input type="radio" name="sort" /> Sold Out</label>
-            </div>
-        </div>
-
+<div className="d-flex justify-content-center">
+<nav aria-label="Page navigation example">
+    <ul className="pagination pagination justify-content-center">
+    {
+          currentPage <= 1 ? "" :  <li className="page-item"><a className="page-link" onClick={()=>setCurrentPage(currentPage-1)}>Previous</a></li>
+    }
+    {
+    Array.apply(0, Array(number_of_page)).map(function (x, i) {
+    return <li key={i+1} className={"page-item "+currentPage == i+1 ? "active" : ""}><a className="page-link" onClick={()=>setCurrentPage(i+1)} >{i+1}</a></li>
+  })
+    }
+     {
+    currentPage >=  number_of_page ? "" :
+    <li className="page-item"><a className="page-link" onClick={()=>setCurrentPage(currentPage+1)} >Next</a></li>
+     }
+    </ul>
+</nav>
+</div>
     </div>
 
     

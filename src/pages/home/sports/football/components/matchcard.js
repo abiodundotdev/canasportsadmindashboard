@@ -52,10 +52,6 @@ function MatchCard({footbaldata,day}){
             <MenuItem onClick={() => router.push("home/sports/football/update")}>
              <Link href={"football/update/"+data.teama}><a><li className="list-group-item"><i className="fa fa-book mr-10"></i><span>Updates</span></li></a></Link>
             </MenuItem>
-
-            <MenuItem data={{foo: 'bar'}} onClick={handleClick}>
-               <li className="list-group-item"><i className="fa fa-recycle mr-10"></i><span>Delete</span></li>
-            </MenuItem>
                
                 </ul>
 

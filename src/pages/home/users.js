@@ -10,7 +10,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import swal from 'sweetalert';
 import {LoadingSkeleton} from '../../components/skeleton';
 
-export default function Dashbaord(props){
+export default function UserPage(props){
     const [amount, setAmount] = useState(0);
     const [fetchedData,setFetchedData] = useState([]);
     const [keyword,setKeyword] = useState("");
@@ -30,7 +30,7 @@ export default function Dashbaord(props){
     let number_of_page = Math.ceil(fetchedData?.length / showPerPage)
 
       const filteredusers = fetchedData?.filter( (eachdata) => 
-      eachdata.name.includes(keyword) || eachdata.email.includes(keyword) || eachdata.phone_number.includes(keyword)
+      eachdata.fullname.includes(keyword) || eachdata.email.includes(keyword) || eachdata.phone_no.includes(keyword)
       )
 
     const userstoshow = filteredusers.slice(indexOfFirstUser, indexOfLastUser)
@@ -123,7 +123,7 @@ return(
                 </div>
             </td>
             <td>
-                <div><a href="javascript:void(0);">{eachuser.name}</a></div>
+                <div><a href="javascript:void(0);">{eachuser.fullname}</a></div>
                 <div className="text-muted">{eachuser.phone_number}</div>
             </td>
             <td className="hidden-xs">
@@ -138,7 +138,7 @@ return(
                 <div className="text-muted">{"₦ "+new Intl.NumberFormat().format(eachuser.wallet_balance)}</div>                                                
             </td>
             <td className="text-right">
-               <Link href={"/home/transactions?user="+eachuser.email}><a className="btn btn-info btn-link" data-toggle="tooltip" title="Tranactions"><i><GrTransaction /></i></a></Link>
+               <Link href={"/home/transactions?user="+eachuser.id+"&name="+eachuser.fullname}><a className="btn btn-info btn-link" data-toggle="tooltip" title="Tranactions"><i><GrTransaction /></i></a></Link>
                {
                 eachuser.status == 1 ?
                 <a className="btn btn-primary ml-2" onClick={() => handleDisable(eachuser.email, 0)} data-toggle="tooltip" title="Disable"><i><GiShieldDisabled /> </i></a>

@@ -29,9 +29,9 @@ export default function Dashbaord(props){
         setShowTicket(false);
         setShowSkel(true);
         setbuttonText("Validating Please Wait...")
-        User.getServerData("/getticketmatchdata/"+ticketId).then(
+        User.getServerData("/getticketdata/"+ticketId).then(
             (response)=>{
-                setTicketData(response.data.data);
+                setTicketData(response.data);
                 setbDisabled(false);
                 setbuttonText("Validate");  
                 toast.success("Ticket Found");  
@@ -63,7 +63,8 @@ export default function Dashbaord(props){
                 User.saveDataToServer(formData, "/authorizeticket").then(
                     (response) =>  {
                         setDisabled(false)
-                        toast.success("Ticket "+ type +"d" +" Successfully")
+                        toast.success("Ticket "+ type +"d" +" Successfully");
+                        setTicketData(response.data.data)
                     }
                 ).catch(
                     (err) => {
@@ -112,79 +113,55 @@ export default function Dashbaord(props){
     <>
     <div className="d-flex justify-content-center mt-5" style={{display : "ne"}}>
         <div className="card mt-0 p-0" style={{width : 500}}>
-            <div className="card-img-top" style={{
-                        height : "200px",
-                        borderRadius : '3px',
-                        boxShadow : '0 5px 12px 0 rgba(0, 0, 0, 0.26)',
-                        background : 'url(canalogo.jpg)',
-                        clipPath  : "url('#my-clip-path')",
-                        margin: '0rem auto',
-                        filter: 'drop-shadow(0 3px 10px #000)',}}>
 
-            <div className="d-flex justify-content-around align-middle mt-80" style={{verticalAlign : 'middle'}}>
-
-            <div className=""> 
-            <img src={String(ticketData?.club1Data?.logo_url) ?? "/canalogo.jpg"} width="100px" height="100px" />
-            <h6 className="text-white font-weight-bold">{ticketData?.club1Data?.team_name}</h6>
-            </div>
+        {
+             ticketData?.ticket_status != "Active" ? 
+            <h3 className="tag tag-success ml-20 text-center" style={{ fontSize : 22, textAlign : 'center'  }}>{ticketData?.ticket_status == "Used" ? " This ticket has been used" : "This ticket has expired"}</h3>
+         : <span></span>
             
-            <h2 className="text-white font-weight-bold">VS</h2>
-
-            <div className="">
-            <img src={String(ticketData?.club2Data?.logo_url) ?? "/canalogo.jpg"} width="100px" height="100px" />
-            <h6 className="text-white font-weight-bold">{ticketData?.club2Data?.team_name}</h6>
-            </div> 
-           
-            </div>  
-
-        </div>
-
-            
+        }        
 
         <div className="card-body ">
             <table className="table table-striped">
                 <tr>
-                    <td rowSpan="8"><QRCode value={ticketData?.ticket?.ticket_id} width={400} /></td>
-                </tr>
-
-                <tr>
-                    <td>Date/Time</td>
-                    <td>{ticketData?.match?.match_time}</td>
+                    <td rowSpan="8"><QRCode value={ticketData?.ticket_id} width={400} /></td>
                 </tr>
 
                 <tr>
                     <td>Price::</td>
-                    <td>{"₦ "+new Intl.NumberFormat().format(ticketData?.ticket?.ticket_price)}</td>
+                    <td>{"₦ "+new Intl.NumberFormat().format(ticketData?.ticket_price)}</td>
                 </tr>
+
+               
 
                 <tr>
                     <td>Unit::</td>
-                    <td>{ticketData?.ticket?.units}</td>
+                    <td>{ticketData?.units}</td>
                 </tr>
 
                 <tr>
                     <td>Total::</td>
-                    <td>{"₦ "+new Intl.NumberFormat().format(ticketData?.ticket?.total_amount_paid)}</td>
+                    <td>{"₦ "+new Intl.NumberFormat().format(ticketData?.total_amount_paid)}</td>
                 </tr>
 
                 <tr>
                     <td>Time Booked ::</td>
-                    <td>{moment(ticketData?.ticket?.created_at).format("LLLL")}</td>
+                    <td>{moment(ticketData?.created_at).format("LLLL")}</td>
                 </tr>
 
                 <tr>
                     <td>Booked By ::</td>
-                    <td>{ticketData?.ticket?.user}</td>
+                    <td>{ticketData?.user}</td>
                 </tr>
 
                 <tr>
                     <td>Status::</td>
                     <td>
                         {
-                        ticketData?.ticket?.authorized === 1 ?
-                        <span className="tag tag-danger">Authorized</span>
+                        ticketData?.ticket_status == "Active" ?
+                        <span className="tag tag-danger"> {ticketData?.ticket_status}</span>
                         : 
-                        <span className="tag tag-success">Pending</span>
+                        <span className="tag tag-success">{ticketData?.ticket_status}</span>
                         }
                     </td>
                 </tr>
@@ -198,15 +175,12 @@ export default function Dashbaord(props){
     <div className="d-flex col justify-content-center">
         {
 
-        ticketData?.ticket?.authorized === 0 ? 
+        ticketData?.ticket_status === "Active" ?
             <button className="btn btn-primary" onClick={()=>authorizeTicket("authorize")} disabled={disabled}><i className="fa fa-check"></i>CHECKIN/AUTHORIZE</button>     
     :
-    <span className="tag tag-danger ml-20"><i className="fa fa-error"></i> This Ticket Has been Authorized and Expired at {moment(ticketData?.ticket?.updated_at).format("LLL")}</span>
-       
+  <span></span>    
        }
-        {
-            //<button className="btn btn-danger ml-20" onClick={()=>authorizeTicket("unauthorize")}><i className="fa fa-error"></i> CANCEL TICKET</button>
-            }
+      
             </div>
 
     </>

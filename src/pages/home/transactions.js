@@ -8,10 +8,10 @@ import { LoadingSkeleton } from '../../components/skeleton';
 
 export default function Tranasactions(props){
     const router = useRouter()
-    const { user } = router.query
+    const { user, name } = router.query
     const userid = router.query.user
-    const [fetchedData, setFetchedData] = useState([])
-    const [filterBy, setFilterBy] = useState("all")
+    const [fetchedData, setFetchedData] = useState({})
+    const [transactions, setTransactions] = useState([])
     const [keyword,setKeyword] = useState("");
     const [pageReady, setPageReady] = useState(false);
     
@@ -20,6 +20,7 @@ export default function Tranasactions(props){
             User.getServerData("/getusertransactions/"+userid).then(
                 (response)=>{
                     setFetchedData(response.data)
+                    setTransactions(response.data.transactions)
                     setPageReady(true);
                 }
             ).catch(
@@ -27,49 +28,23 @@ export default function Tranasactions(props){
 
                 }
             )
-        },[])
-
+        },[router.isReady, userid])
     
-    const successful = fetchedData?.filter(
-            (eachtrans) => eachtrans.status == 1
-    )
-
-    const failed = fetchedData?.filter(
-        (eachtrans) => eachtrans.status == 0
-    )
-
-    const totalamountadded = fetchedData?.filter(
-        (eachtrans) => eachtrans.type == "add" && eachtrans.status == 1
-    )
-
-    const totamap = totalamountadded?.map(
-            (eachtrans) => eachtrans.amount
-    )
-
-    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-    
-    let sumtotaladded = totamap?.length == 0 ? 0 : totamap?.reduce(reducer)
-
-    const filtertransactions = fetchedData?.filter( (eachdata) => 
-      eachdata.transactionid.includes(keyword) || eachdata.type.includes(keyword)
-    )
-
-    function handleRadioChange(e){
+    function handleRadioChange(e){        
            var value = e.target.value
-           let filtdata = fetchedData
+           let filteredData = transactions
            if(value == 1){
-            filtdata = fetchedData?.filter(
-                (eachtrans) => eachtrans.status == 1
+            filteredData = transactions?.filter(
+                (eachtrans) => eachtrans.status == "success"
                 )
            }else if(value == 0){
-            filtdata = fetchedData?.filter(
-                (eachtrans) => eachtrans.status == 0
+            filteredData = transactions?.filter(
+                (eachtrans) => eachtrans.status == "failed"
                 )
            }else{
-               filtdata = fetchedData
+               filteredData = transactions
            }
-           setFetchedData(filtdata)
-             
+           setTransactions(filteredData)      
     }
 
 
@@ -80,7 +55,7 @@ export default function Tranasactions(props){
                 <div className="row clearfix">
                     <div className="col-lg-12">
                         <div className="mb-4">
-                            <h5 className="text-center">{userid}  Transactions History</h5>
+                            <h5 className="text-center">{name}  Transactions History</h5>
                         </div>                        
                     </div>
                 </div>
@@ -92,7 +67,7 @@ export default function Tranasactions(props){
                         <h3 className="card-title">Total Amount Added</h3>
                     </div>
                     <div className="card-body">
-                        <h5 className="number mb-0 font-32 text-center">{"₦ "+convertomoney(sumtotaladded) }</h5>
+                        <h5 className="number mb-0 font-32 text-center">{"₦ "+convertomoney(fetchedData.total_transaction_amount) }</h5>
                     </div>
                 </div>
             </div>
@@ -103,7 +78,7 @@ export default function Tranasactions(props){
                         <h3 className="card-title">Booked Tickets</h3>
                     </div>
                     <div className="card-body">
-                        <h5 className="number mb-0 font-32 counter text-center">0</h5>
+                        <h5 className="number mb-0 font-32 counter text-center">{fetchedData.total_booked_tickets}</h5>
                     </div>
                 </div>
             </div>
@@ -114,7 +89,7 @@ export default function Tranasactions(props){
                         <h3 className="card-title">Successful</h3>
                     </div>
                     <div className="card-body">
-                        <h5 className="number mb-0 font-32 counter text-center">{successful.length}</h5>
+                        <h5 className="number mb-0 font-32 counter text-center">{fetchedData.success_transactions}</h5>
                     </div>
                 </div>
             </div>
@@ -126,7 +101,7 @@ export default function Tranasactions(props){
                         <h3 className="card-title">Failed</h3>
                     </div>
                     <div className="card-body">
-                        <h5 className="number mb-0 font-32 counter text-center">{failed.length}</h5>
+                        <h5 className="number mb-0 font-32 counter text-center">{fetchedData.failed_transactions}</h5>
                     </div>
                 </div>
             </div>
@@ -165,21 +140,21 @@ export default function Tranasactions(props){
                                             </tr>
                                         </thead>
                                         <tbody>
-                                          { fetchedData?.length <= 1 ? <h6>No transaction found for this User</h6> :  
-                                           filtertransactions?.map(
+                                          {transactions.length == 0 ? <h6>No transaction found for this User</h6> :  
+                                          transactions?.map(
                                                (trans) => {
                                                    return (
                                                     <tr>
                                                     <td></td>
-                                                    <td>{trans.transactionid}</td>
-                                                    <td>{trans.type == "add" ? "Add Money" : "Buy Ticket"}</td>
+                                                    <td>{trans.transid}</td>
+                                                    <td>{trans.type == "debit" ? "Buy Ticket" : "Add Money"}</td>
                                                     <td>{"₦ "+new Intl.NumberFormat().format(trans.amount)}</td>
                                                     <td>{
                                                         moment(trans.created_at).format('MMMM Do YYYY, h:mm a')
                                                         }</td>
                                                     <td>
                                                         {
-                                                        trans.status == 1 ?
+                                                        trans.status == "success" ?
                                                         <span className="tag tag-danger">Successful</span>
                                                         :
                                                         <span className="tag tag-success">Failed</span>

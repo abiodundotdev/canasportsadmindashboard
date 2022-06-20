@@ -5,19 +5,11 @@ import Skeleton from "react-loading-skeleton"
 import User from "../../../../../services/User"
 import { matchStatusToString } from "../../../../../components/appmethods"
 export default function MatchTable({matchdata}){
-    const [club1, setClub1] = useState({})
-    const [club2, setClub2] = useState({})
-    useEffect(
-    ()=>{
-        User.getServerData("/getoneteam/"+matchdata?.team_a).then( response => setClub1(response.data) ).catch( (err)=> console.log(err))
-        User.getServerData("/getoneteam/"+matchdata?.team_b).then( response => setClub2(response.data) ).catch( (err)=> console.log(err))
-    },[])
-
     return (
         <tr>
             <td>
                 {
-                typeof(club1?.team_name) == "undefined" || typeof(club2?.team_name) == "undefined" ? <Skeleton /> : club1?.team_name + " VS "+ club2?.team_name
+                matchdata?.club_one.team_name + " VS "+ matchdata?.club_two.team_name
                 } 
             </td>
             <td>
@@ -40,9 +32,7 @@ export default function MatchTable({matchdata}){
                 matchStatusToString(matchdata?.status,matchdata?.match_half)
             }
             </td> 
-            <td>
-                <i><FaTrash /></i>
-            </td> 
+             
         </tr>
     )
 }

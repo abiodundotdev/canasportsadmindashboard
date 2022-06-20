@@ -2,7 +2,6 @@ import {CgPlayListAdd} from 'react-icons/cg'
 import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import {useState} from 'react'
-//import Calendar from 'react-calendar';
 import Dialog from '@material-ui/core/Dialog';
 import Slide from '@material-ui/core/Slide';
 import AppBar from '@material-ui/core/AppBar';
@@ -16,8 +15,6 @@ import {useRouter} from 'next/router';
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated';
 import User from '../../../../../services/User';
-import useSWR, {mutate,trigger} from 'swr'
-import {MdCancel,MdDeleteForever} from 'react-icons/md'
 import { ToastContainer, toast } from 'react-toastify';
 import swal from 'sweetalert';
 import moment from 'moment';
@@ -37,12 +34,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function LeagueDisplay() {
     const router = useRouter();
     const { leaguename, leagueid } = router.query;   
-    const {data : listleagueclubs} = useSWR("/listcurrentleagueclub/"+leagueid, {refreshInterval: 1000, refreshWhenHidden : true});
-    const {data : listmatches} = useSWR("/listleaguematches/"+leagueid, {refreshInterval: 1000, refreshWhenHidden : true});
-    const {data : listallclubs} = useSWR("/listallclubs");
     const [calenderValue, onCalenderChange] = useState(new Date());
     const today = Date.now();
     const [selectedDay, setSelectedDay] = useState(today)
+    const [listMatches, setListmatches] = useState([])
+    const [leagueData, setLeagueData] = useState([])
     const [ds, setDS] = useState("Today")
     const [startDate,setStartDate] = useState(today)
     const [endDate,setEndDate] = useState(today)
@@ -76,24 +72,41 @@ export default function LeagueDisplay() {
         },
     [startDate,endDate])
 
+    useEffect(() => {
+        getMatchData()
+    },[router.isReady, leagueid])
+
+    const getMatchData = ()=> {
+        User.getServerData("/listleaguematches/"+leagueid).then( (response)=> {
+                    setListmatches(response.data)
+        } ).catch( (e)=> {
+            console.log("data")
+        } )
+
+        User.getServerData("/getleaguedata/"+leagueid).then( (response)=> {
+            setLeagueData(response.data.point_table)
+} ).catch( (e)=> {
+    console.log("data")
+} )
+    }
+
     const sDate = moment(startDate).format('L')
     const eDate = moment(endDate).format('L')
 
-    const matchToday = listmatches?.filter(
+    const matchToday =  Array.isArray(listMatches) ? listMatches.filter(
         (eachmatch) => {
                         var date = new Date(eachmatch?.match_day);
                         return (date >= startDate && date <= endDate);
-                        //return eachmatch.match_day == sDate
-                     }
-    )
+                     }         
+    ) : []
 
-    const matchNotPlayed = listmatches?.filter(
+    const matchNotPlayed =  Array.isArray(listMatches) ? listMatches.filter(
         (eachmatch) => eachmatch.status == 0 && eachmatch.match_half == 0
-    )
+    ) : []
 
-    const matchPlayed = listmatches?.filter(
+    const matchPlayed = Array.isArray(listMatches) ? listMatches.filter(
         (eachmatch) => eachmatch.status == 0 && eachmatch.match_half == 2
-    )
+    ) : []
 
     const useStyles = makeStyles((theme) => ({
         appBar: {
@@ -145,104 +158,6 @@ export default function LeagueDisplay() {
         setDS(d2s) 
     }
 
-    function getTeamPoints(teamid){
-        const foundasteamA = listmatches?.filter(
-            (eachmatch) => eachmatch.team_a == teamid
-        )
-    
-        const foundasteamB = listmatches?.filter(
-            (eachmatch) => eachmatch.team_b == teamid
-        )
-    
-        const fetchAllMatchesByClub = listmatches?.filter(
-            (eachmatch) => (eachmatch.team_a == teamid || eachmatch.team_b == teamid) && eachmatch.status == 0 && eachmatch.match_half == 2
-        )
-        
-        //console.log(foundasteamA)
-        //console.log(foundasteamB)
-        
-        //Match Wins Calculator
-        const matchWinAsTeamA = foundasteamA?.filter(
-            (eachmatch) => eachmatch.score_a > eachmatch.score_b && eachmatch.status == 0 && eachmatch.match_half == 2
-        )
-        const matchWinAsTeamB = foundasteamB?.filter(
-            (eachmatch) => eachmatch.score_b > eachmatch.score_a && eachmatch.status == 0 && eachmatch.match_half == 2
-        )
-        const totalwins = matchWinAsTeamA?.length + matchWinAsTeamB?.length
-        
-        //Match Loss Calculator
-        const matchLossAsTeamA = foundasteamA?.filter(
-            (eachmatch) => eachmatch.score_b > eachmatch.score_a && eachmatch.status == 0 && eachmatch.match_half == 2
-        )
-    
-        const matchLossAsTeamB = foundasteamB?.filter(
-            (eachmatch) => eachmatch.score_a > eachmatch.score_b && eachmatch.status == 0 && eachmatch.match_half == 2
-        )
-    
-        const totalloss = matchLossAsTeamA?.length + matchLossAsTeamB?.length
-    
-        //Draw Calculator
-       
-        const totalPlayed = fetchAllMatchesByClub?.length
-    
-        const matchDraw = fetchAllMatchesByClub?.filter(
-            (eachmatch) => eachmatch.score_a == eachmatch.score_b 
-        )
-        const totaldraw  = matchDraw?.length
-       
-        //Match POINTS CALCULATOR START
-        const matchpointsatA = foundasteamA?.map(
-            (eachmatch) => eachmatch.point_a
-        )
-        const matchpointsatB = foundasteamB?.map(
-            (eachmatch) => eachmatch.point_b
-        )
-        //MATCH GOAL CALCULATOR STARTS
-        const matchgoalsatA = foundasteamA?.map(
-            (eachmatch) => eachmatch.score_a
-        )
-        const matchgoalsatB = foundasteamB?.map(
-            (eachmatch) => eachmatch.score_b
-        )
-        //Match Goal Agianst
-        const matchgoalsAgainstatA = foundasteamA?.map(
-            (eachmatch) => eachmatch.score_b
-        )
-    
-        const matchgoalsAgainstatB = foundasteamB?.map(
-            (eachmatch) => eachmatch.score_a
-        )
-    
-        const reducer = (accumulator, currentValue) => accumulator + currentValue;
-        //console.log(matchpointsatA,matchgoalsatA,matchgoalsAgainstatA)
-        //console.log(matchpointsatB,matchgoalsatB,matchgoalsAgainstatB)
-        
-        let sumpointsasa = matchpointsatA?.length == 0 ? 0 : matchpointsatA?.reduce(reducer)
-        let sumpointsasb = matchpointsatB?.length == 0 ? 0 : matchpointsatB?.reduce(reducer)
-        
-        let sumgoalsasa = matchgoalsatA?.length == 0 ? 0 : matchgoalsatA?.reduce(reducer)
-        let sumgoalsasb = matchgoalsatB?.length == 0 ? 0 : matchgoalsatB?.reduce(reducer)
-        
-        let sumgoalsAgainstasa = matchgoalsAgainstatA?.length == 0 ? 0 : matchgoalsAgainstatA?.reduce(reducer)
-        let sumgoalsAgaisntasb = matchgoalsAgainstatB?.length == 0 ? 0 : matchgoalsAgainstatB?.reduce(reducer)
-    
-    
-        let totalpoints = sumpointsasa + sumpointsasb
-        let totalgoalsfor = sumgoalsasa + sumgoalsasb
-        let totalgoalsAgainst = sumgoalsAgainstasa + sumgoalsAgaisntasb
-        let goaldifference = totalgoalsfor - totalgoalsAgainst
-        //console.log(totalpoints,totalgoalsfor)
-        return [totalpoints,totalgoalsfor,totalgoalsAgainst,goaldifference,totalwins,totalloss,totaldraw,totalPlayed]
-    }
-    
-    
-    function getClubName(clubid){
-       const found = listallclubs?.find(
-            (eachclub) => eachclub.id == clubid
-        )
-        return found?.team_name
-    }
-
     return (
 <>
 <div className="card p-2">
@@ -255,8 +170,7 @@ export default function LeagueDisplay() {
             setAddClubShowModal(true)
         }
         } className="btn btn-primary d-flex font-medium"><i><CgPlayListAdd /></i> <span>Add Club(s)</span></button>
-        <h6 className="tag tag-primary">Start : January, 22 2020</h6>
-        <h6 className="tag tag-info">End : December 23, 2020</h6>
+       
     </div>
 </div>
 
@@ -300,9 +214,7 @@ export default function LeagueDisplay() {
 
         <div className="card">
                <div className="card-header d-flex justify-content-between">
-                <h6 className="card-title">Club Statistics</h6>
-                <CSVLink className="btn btn-primary" filename={"CanaSportsNg.csv"} data={[[]]}>Export</CSVLink>
-                    
+                <h6 className="card-title">Club Statistics</h6>      
         </div>
                     
         <div className="card-body">
@@ -312,35 +224,28 @@ export default function LeagueDisplay() {
                         <tr>
                         <th></th>
                         <th scope="col" ><small>Team</small></th>
-                        
                         <th scope="col" rowSpan="1" title="Played"><small>P</small></th>
                         <th scope="col" rowSpan="1" title="Wins"><small>W</small></th>
                         <th scope="col" rowSpan="1" title="Draw"><small>D</small></th>
                         <th scope="col" rowSpan="1" title="Loss"><small>L</small></th>
                         <th scope="col" rowSpan="1" title="Goal Difference"><small>GF</small></th>
-                        <th scope="col" rowSpan="1" title="Goal For"><small>GA</small></th>
-                        <th scope="col" rowSpan="1" title="Goal Against"><small>GD</small></th>
                         <th scope="col" rowSpan="1" title="Points"><small>Pts</small></th>
-                        <th scope="col" rowSpan="1" title="Action"><small>Del</small></th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            listleagueclubs?.map( (club,index) => { 
+                              leagueData.length == 0 ? <tr><td>No club found for this league</td></tr> :  leagueData?.map( (club,index) => { 
                          return( 
                              <>
                             <tr>
                                 <td>{index+1}</td>
-                                <td>{club.club_name}</td>
-                                <td>{getTeamPoints(club.club_id)[7]}</td>
-                                <td>{getTeamPoints(club.club_id)[4]}</td>
-                                <td>{getTeamPoints(club.club_id)[6]}</td>
-                                <td>{getTeamPoints(club.club_id)[5]}</td>
-                                <td>{getTeamPoints(club.club_id)[1]}</td>
-                                <td>{getTeamPoints(club.club_id)[2]}</td>
-                                <td>{getTeamPoints(club.club_id)[3]}</td>
-                                <td>{getTeamPoints(club.club_id)[0]}</td>
-                                <td><button onClick={ () => handleDeleteClub(club.id,club.club_id)} className="btn btn-danger text-danger"><MdDeleteForever /></button></td> 
+                                <td>{club?.club?.team_name}</td>
+                                <td>{club?.points}</td>
+                                <td>{club?.wins}</td>
+                                <td>{club?.draws}</td>
+                                <td>{club?.loss}</td>
+                                <td>{club?.goal_diff}</td>
+                                <td>{club?.points}</td>
                             </tr> 
                              </>
                                      )
@@ -388,6 +293,7 @@ function AddClubCard(){
     const [clublist, SetClubList] = useState([])
     const [dbClub, setDbClub] = useState([])
     const [SetSeason, season] = useState("")
+    const [isLoading, setIsLoading] = useState(false)
     const animatedComponents = makeAnimated();
     const optionsdb = []
     
@@ -428,17 +334,20 @@ function AddClubCard(){
                     console.log(err)
                 }
             )
-        }
+        },[]
     )
 
     const handleSubmit = () => {
+        setIsLoading(true);
          User.saveDataToServer(formJson, "/addclublisting").then(
             (response) => {
-               toast.success("Clubs Added Successfully")      
+               toast.success("Clubs Added Successfully")    
+               setIsLoading(false)  
                 }
         ).catch(
             (error) => {
-               toast.error("Error Occcur Check Inputs") 
+               toast.error("An error occcured check inputs") 
+               setIsLoading(false)  
             }
         )
     }
@@ -483,7 +392,7 @@ function AddClubCard(){
                    }
                )}
             </div> 
-            <button className="btn btn-primary" onClick={handleSubmit}>Save</button>
+            <button className="btn btn-primary" disabled={isLoading} onClick={handleSubmit}>Save</button>
         </div>
     </>
     )

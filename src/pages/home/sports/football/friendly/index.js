@@ -20,7 +20,7 @@ import AddNewFriendlyCard from '../components/addnewfriendly';
 
 
 export default function SportHome(){
-    const [fetchedData, setFetchedData] = useState([])
+    const [fetchedData, setFetchedData] = useState({})
     const today = moment().format()
     const [founditem, setfounditem] = useState(false)
     const [selectedDay, setSelectedDay] = useState(today)
@@ -41,21 +41,6 @@ export default function SportHome(){
                 }
             )
         },[])
-
-        const matchToday = fetchedData?.filter(
-            (eachmatch) => {
-                            var date = new Date(eachmatch.match_day);
-                            return (date >= startDate && date <= endDate);
-                         }
-        )
-    
-        const matchNotPlayed = fetchedData?.filter(
-            (eachmatch) => eachmatch.status == 0 && eachmatch.match_half == 0
-        )
-    
-        const matchPlayed = fetchedData?.filter(
-            (eachmatch) => eachmatch.status == 0 && eachmatch.match_half == 2
-        )
     return (
 <DashLayout title="Friendly Matches">
     <div className="section-body mt-2">
@@ -63,17 +48,17 @@ export default function SportHome(){
 <div className="card p-2">
     <div className="d-flex justify-content-between">
         <button className="btn btn-primary font-medium"><i><CgPlayListAdd /></i> <span>Add Match</span></button>
-        <Link href={"/home/sports/football/league/listmatches?leagueid=234=&name=Friendly Matches"}><button className="btn btn-info font-medium"><i><FaListAlt /></i> <span>List Matches</span></button></Link> 
+        <Link href={"/home/sports/football/friendly/listmatches"}><button className="btn btn-info font-medium"><i><FaListAlt /></i> <span>List Matches</span></button></Link> 
     </div>
 </div>
 
         <div className="row">
             <div className="col-lg-7">
-                <MatchListCard day="Today" matchdata={matchToday} isitemfounded={founditem} />
+                <MatchListCard day="Today" matchdata={fetchedData.today} isitemfounded={founditem} />
 
-                <MatchListCard day="Not Played" matchdata={matchNotPlayed} isitemfounded={founditem} />
+                <MatchListCard day="Not Played" matchdata={fetchedData.not_played} isitemfounded={founditem} />
 
-                <MatchListCard day="Played" matchdata={matchPlayed} isitemfounded={founditem} />
+                <MatchListCard day="Played" matchdata={fetchedData.played} isitemfounded={founditem} />
             </div>
 
             <div className="col-lg-5">

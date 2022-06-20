@@ -123,7 +123,9 @@ export default function SportHome(){
             <td className="width35 hidden-xs">
             <div>{eachpost.post_title}</div>
                 <div className="d-flex justify-content-between">
-                    <Link href={"/home/post/editpost?postid="+eachpost.id}><a>Resend Message  </a></Link> <a className="text-primary" onClick={()=> deletepost(eachpost.id, eachpost.post_title) } style={{cursor : "pointer"}}>Trash</a>
+                   {
+                   }
+                    <a className="text-primary" onClick={()=> deletepost(eachpost.id, eachpost.post_title) } style={{cursor : "pointer"}}>Trash</a>
                 </div>
             </td>
             <td className="">

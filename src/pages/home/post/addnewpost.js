@@ -4,8 +4,6 @@ import Link from 'next/link'
 import {GrTransaction} from 'react-icons/gr'
 import {GiShieldDisabled} from 'react-icons/gi'
 import {BsFillShieldFill} from 'react-icons/bs'
-import ReactDOM from 'react-dom';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { EditorState } from 'draft-js';
 import { ContentState, convertToRaw } from 'draft-js';
 import { convertToHTML } from 'draft-convert';
@@ -14,6 +12,9 @@ import User from '../../../services/User';
 import { InputLabel, MenuItem, Select } from '@material-ui/core';
 import ScaleLoader from "react-spinners/ScaleLoader";
 import moment from 'moment';
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
 
 
 export default function SportHome(){
@@ -23,21 +24,23 @@ export default function SportHome(){
     const [contentState, setContentState] = useState(raw) // ContentState JSON
     const [convertedContent , setConvertedContent] = useState("")
     const [posttitle , setPostTitle] = useState("")
+    const [postBanner , setPostBanner] = useState("")
     const [cat , setCat] = useState("")
     const [match, setMatch] = useState([]);
     const [selectedMatch, setSelectedMatch] = useState("");
     const [postCategory , setpostCategory] = useState([])
     const [formDisabled, setFormDisabled] = useState(false)
     const [isFormSubmitted, setFormSubmitted] = useState(false)
+    const [value, setValue] =  useState("");
     const preloader = isFormSubmitted ? <ScaleLoader height={13} color="white" /> : " "
     
   
     const formJson = {
         "post_title" : posttitle,
-        "post_content" : convertedContent,
+        "post_content" : value,
         "post_category" : cat,
         "status" : 1,
-        "match_id" : selectedMatch
+        "banner" : postBanner
     }
 
     useEffect(
@@ -146,49 +149,36 @@ export default function SportHome(){
         <div className="form-group">
             <input onInput={(e)=> setPostTitle(e.target.value)} className="form-control" placeholder="Post Title"/>
         </div>
+        
+        <div className="form-group">
+            <input onInput={(e)=> setPostBanner(e.target.value)} className="form-control" placeholder="Post Banner Url"/>
+        </div>
   
-    {
-    editor ?  <edit.Editor
-        editorState={editorState}
-        onEditorStateChange={handleEditorChange}
-        wrapperClassName={Styles.wrapperclass}
-        editorClassName={Styles.editorclass}
-        wrapperStyle = {Styles.wrapperclass}
-        editorStyle = {Styles.editorclass}
-        toolbarClassName={Styles.toolbarclass}
-      />  : ""
+  
+   
+        <CKEditor 
+                            editor={ ClassicEditor }
+                            onChange={ ( event, editor ) => {
+                                const data = editor.getData();
+                                setValue(data);
+                                //console.log(data);
+                            } }
+                            onBlur={ ( event, editor ) => {
+                              //  console.log( 'Blur.', editor );
+                            } }
+                            onFocus={ ( event, editor ) => {
+                               // console.log( 'Focus.', editor );
+                            } }
+    />
 
-    }
-    
-<div className="mb-10 mt-4">
-<InputLabel id="demo-simple-select-label">Choose Category</InputLabel>
-    <Select
-          labelId="demo-simple-select-placeholder-label-label"
-          id="demo-simple-select-placeholder-label"
-          value={cat}
-          onChange={(e)=>setCat(e.target.value)}
-          className="form-control"
-        >
-          <MenuItem  value="">
-            <em>Choose Category</em>
-          </MenuItem>
-          <MenuItem  value="livematch">
-            <em>Live Match Streaming</em>
-          </MenuItem>
-         { 
-         postCategory?.map(eachcat => <MenuItem value={eachcat.category_name}>{eachcat.category_name}</MenuItem>)
-         }
-    </Select>
-</div>
-
-
+<br /> <br />
 <div className="form-group">
-    <label>Select Match</label>
-        <select onChange={(e)=> setSelectedMatch(e.target.value)} className="form-control" >
+    <label>Select Category</label>
+        <select onChange={(e)=> setCat(e.target.value)} className="form-control" >
             {
-                match?.map(
-                    (eachmatch)=>{
-                        return <option value={eachmatch?.match_id}>{`${eachmatch?.teama_name}  ${eachmatch?.teamb_name} @ ${moment(eachmatch?.match_day).format("LL")} `}</option>
+                postCategory?.map(
+                    (eachcat)=>{
+                        return <option value={eachcat?.category_name}>{eachcat?.category_name}</option>
                     }
                 )
             }

@@ -14,6 +14,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import {FaLongArrowAltDown,FaLongArrowAltUp} from 'react-icons/fa'
 import {IoMdFootball} from 'react-icons/io'
 import moment from 'moment';
+import { each } from 'jquery';
 
 export default function MatchUpdate(){
     const [calenderValue, onCalenderChange] = useState(new Date())
@@ -22,6 +23,7 @@ export default function MatchUpdate(){
     const [currentTeamId, setcurrentTeamId] = useState(null)
     const [players, setPlayers] = useState([])
     const [selectedTeam, setSelectedTeam] = useState("")
+    const [selectedTeamPlayers, setSelectedTeamPlayers] = useState([])
     const [seletedPlayers, setTeletedplayers] = useState("")
     const [player1, setPlayer1] = useState("")
     const [player2, setPlayer2] = useState("")
@@ -50,13 +52,34 @@ export default function MatchUpdate(){
         "info" : cardType,
         "match_id" : matchid
     }
-    //const {data : listAllUpdates} = useSWR("/listallmatchupdate/"+matchid, {refreshInterval: 1000, refreshWhenHidden : true})    
     useEffect(
         ()=>{
-           User.getServerData("/listallmatchupdate/"+matchid).then(
-               (response)=>setlistAllUpdates(response.data)
-           ).catch(()=>console.log("Error Occur"))
-        },[saved])
+        // fetchUpdate()
+        },[router.isReady, saved, matchid])
+
+const fetchUpdate = ()=>{
+    User.getServerData("/listallmatchupdate/"+matchid).then(
+        (response)=>setlistAllUpdates(response.data)
+    ).catch(()=>console.log("Error occured"))
+} 
+    useEffect(
+        () =>{
+            fetchMatch()
+            setCurrentTime(new Date().toLocaleTimeString());
+            setCurrentTimeStamp(new Date()/1000)
+        },[router.isReady, matchid, saved])
+
+        const fetchMatch = ()=> {
+            User.getServerData("/getamatch/"+matchid)
+            .then( (response)=>{
+                setMatchData(response.data)
+                setlistAllUpdates(response.data.match_stream)
+                setMatchUrl(response.data?.live_stream_url)
+            })
+            .catch((response)=>{
+                console.log(response);
+            })
+        }
 
     const handleStreamSave = () => {
         setDisableButton(true)
@@ -64,13 +87,13 @@ export default function MatchUpdate(){
             (response) => {
               isFormSaved(true)
               setDisableButton(false)
+              fetchMatch()
               toast.success("Match Update Added Successfully")  
             }
         ).catch(
             (err) => {
                 setDisableButton(false)
                 toast.error(err.response.data.message)
-                //console.log(err.response.data.message)
             }
         )
     }
@@ -87,63 +110,11 @@ export default function MatchUpdate(){
         { value: 'substitution', label: 'Substitution', id : 8}
       ];
 
-    useEffect(
-        () => {
-            //const {data : listallplayers} = useSWR("/geteamplayers/"+currentTeamId)
-            let fdata = [
-                { value: "", label: "-- Choose Player --" ,id : 0}
-            ]
-            User.getServerData("/getplayersforateam/"+currentTeamId).then(
-                (response) => {
-                    response.data.data.map( (data) => {
-                        fdata.push(
-                            {
-                                'value' : data?.name,
-                                'label' : data?.name,
-                                'id' :  data?.id
-                            }
-                        )
-                    }
-                    )
-                    setPlayers(fdata)
-                }
-            ).catch(
-                (err) => {
-                    console.log(err)
-                }
-            )
-     }, [currentTeamId]);
-
-    
-    function getClubName(clubid){
-        const {data : listallclubs} = useSWR("/listallclubs");
-        const found = (listallclubs||[]).find(
-             (eachclub) => eachclub.id == clubid
-         )
-         return found?.team_name
-     };
-
-     const team1 = getClubName(matchData?.team_a)
-     const team2 = getClubName(matchData?.team_b)
-
      const teamoptions = [
-        { value: team1, label: team1, teamid : matchData?.team_a},
-        { value: team2, label: team2, teamid : matchData?.team_b}
+        { value: matchData?.club_one?.team_name, label: matchData?.club_one?.team_name, teamid :matchData?.club_one?.id, type : 'club_one'},
+        { value: matchData?.club_two?.team_name, label: matchData?.club_two?.team_name, teamid :matchData?.club_two?.id, type : 'club_two'},
     ]
 
-    useEffect(
-        () =>{
-            User.getServerData("/getamatch/"+matchid)
-            .then( (response)=>{
-                setMatchData(response.data)
-                setMatchUrl(response.data?.live_stream_url)
-            })
-            .catch((response)=>{
-                console.log(response);
-            })
-            setCurrentTime(new Date().toLocaleTimeString());
-            setCurrentTimeStamp(new Date()/1000)
-        },[])
 
     function getMatchHalf(half){
         if(half == 1){
@@ -191,15 +162,14 @@ export default function MatchUpdate(){
         <DashLayout title="Match Updater">
         <div className="section-body mt-2">
         <div className="alert alert-info">
-            <h6 className="text-center font-weight-bold"> Live Match Update for {team1} vs {team2} </h6> 
+            <h6 className="text-center font-weight-bold"> Live Match Update for {matchData?.club_one?.team_name} vs {matchData?.club_two?.team_name} </h6> 
          </div>
-
-         <div className="alert alert-success d-flex justify-content-between p-1">
-            <h6>C_H :: <b>{getMatchHalf(matchData?.match_half)}</b></h6>
-            <h6>C_T :: {currentTime}</h6>
-            <h6>M_S :: {moment.unix(matchData?.match_start_time).format('HH:mm:ss A')}</h6>
-            <h6>M_C_T :: {getTimeSpent(matchData?.status, matchData?.match_half, matchData?.match_start_time, matchData?.match_second_start)}</h6>
+{
+         <div className="alert alert-success d-flex justify-content-center p-1">
+            <h6>Current Time :: {currentTime}</h6>
          </div>
+}
+        
         <div className="row">
 
         <div className="col-lg-6" style={{height : "800px"}}>
@@ -211,8 +181,15 @@ export default function MatchUpdate(){
             
         <Select className="w-75" placeholder="Choose Club/Team" options={teamoptions} onChange={
                  (opup) => {
-                     setcurrentTeamId(opup.teamid); 
-                     setSelectedTeam(opup.value); 
+                    var type = opup.type;
+                    setSelectedTeamPlayers([])
+                    setcurrentTeamId(opup.teamid); 
+                    var players = matchData[type].players
+                   var emptyPlayers = []
+                   for (let index = 0; index < players?.length; index++) {  
+                    emptyPlayers.push({label : players[index]?.name, value : players[index]?.name, id : players[index]?.id, })                  
+                   }
+                    setSelectedTeamPlayers(emptyPlayers)
                  }
                 } 
         />
@@ -229,10 +206,10 @@ export default function MatchUpdate(){
             <br />
            
             {currentUpdate == "posession" ? ""
-            :  <><span>-- Select Player -- </span> <Select className="w-75" placeholder={currentUpdate == "substitution" ? "Choose Player Out" :  "Choose Player"}  options={players} 
+            :  <><span>-- Select Player -- </span> <Select className="w-75" placeholder={currentUpdate == "substitution" ? "Choose Player Out" :  "Choose Player"}  options={selectedTeamPlayers} 
             onChange={
                 (player) => {
-                 setPlayer1(player.value)
+                 setPlayer1(player.label)
                 }}
             /> </>
             }
@@ -240,10 +217,10 @@ export default function MatchUpdate(){
             <br />
 
             {currentUpdate == "substitution" ? 
-            <> <span>-- Select Player -- </span><Select className="w-75" placeholder="Choose Player In"  options={players}
+            <> <span>-- Select Player -- </span><Select className="w-75" placeholder="Choose Player In"  options={selectedTeamPlayers}
             onChange={
                 (player) => {
-                 setPlayer2(player.value)
+                 setPlayer2(player.label)
                 }}
             /> </>
             : "" 
@@ -316,9 +293,9 @@ matchData?.status == 0 &&  matchData?.match_half == 2 ?
 
                <div className="card-body">
                     <div className="row">
-                        <div className="col-5"><h6>{team1}</h6></div>
+                        <div className="col-5"><h6>{matchData?.club_one?.team_name}</h6></div>
                         <div className="col-2"><h6>{matchData?.score_a} - {matchData?.score_b}</h6></div>
-                        <div className="col-5"><h6>{team2}</h6></div>
+                        <div className="col-5"><h6>{matchData?.club_two?.team_name}</h6></div>
                     </div>
 
                 <div className="row">
@@ -326,7 +303,7 @@ matchData?.status == 0 &&  matchData?.match_half == 2 ?
                         {
                              listAllUpdates?.map(
                                 (update) => {
-                                    if(update.team == matchData?.team_a){
+                                    if(update.team == matchData?.club_one.id){
                                         return (
                                             <div className="d-flex justify-content-between">
                                                 <b>{update.time+"\'"}</b>
@@ -358,7 +335,7 @@ matchData?.status == 0 &&  matchData?.match_half == 2 ?
                     {
                             listAllUpdates?.map(
                                 (update) => {
-                                    if(update.team == matchData?.team_b){
+                                    if(update.team == matchData?.club_two.id){
                                         return (
                                             <div className="d-flex justify-content-between">
                                                 <b>{update.time+"\'"}</b>

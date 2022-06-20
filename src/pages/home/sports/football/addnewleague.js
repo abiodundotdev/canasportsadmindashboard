@@ -32,7 +32,7 @@ export default function Dashbaord(props){
         "start_date" : moment(startDate).format("LL"),
         "description" : description,
         "end_date" : moment(endDate).format("LL"),
-        "status" : 1
+        "status" : 0
     }
 
     useEffect(

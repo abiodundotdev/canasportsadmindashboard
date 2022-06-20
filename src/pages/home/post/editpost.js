@@ -1,48 +1,37 @@
-export default function EditPost(){
-    return (<div>
-        <h2>WELCOME</h2>
-    </div>);
-}
-/*import DashLayout from '../../../components/dashlayout'
+import DashLayout from '../../../components/dashlayout'
 import { useState, useEffect } from 'react';
-import Link from 'next/link' 
-import {GrTransaction} from 'react-icons/gr'
-import {GiShieldDisabled} from 'react-icons/gi'
-import {BsFillShieldFill} from 'react-icons/bs'
-import ReactDOM from 'react-dom';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { EditorState } from 'draft-js';
-import { ContentState, convertToRaw} from 'draft-js';
-import { convertToHTML } from 'draft-convert';
 import {toast} from 'react-toastify'
 import User from '../../../services/User';
-import { InputLabel, MenuItem, Select } from '@material-ui/core';
 import ScaleLoader from "react-spinners/ScaleLoader";
-import { useRouter } from 'next/router'
+import {useRouter} from 'next/router'
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
-
-export default function EditPost(){
+export default function EditPostPage(){
     const [edit, setedit] = useState({})
+    const router = useRouter()
+    const postId = router.query.id
     const [convertedContent , setConvertedContent] = useState("")
     const [posttitle , setPostTitle] = useState("")
+    const [postContent , setPostcontent] = useState("")
+    const [postBanner , setPostBanner] = useState("")
     const [cat , setCat] = useState("")
+    const [post, setPost] = useState({});
     const [postCategory , setpostCategory] = useState([])
     const [formDisabled, setFormDisabled] = useState(false)
     const [isFormSubmitted, setFormSubmitted] = useState(false)
     const preloader = isFormSubmitted ? <ScaleLoader height={13} color="white" /> : " "
-    const [post, setPost] = useState({})
-    const [constate, setConState] = useState("")
-    const {postid} = useRouter().query
-    const [htmconv, sethtmlconv] = useState({})
-
-    
+    const [value, setValue] =  useState("");
+  
+  
     const formJson = {
+        "post_id" : postId,
+        "banner" : postBanner,
         "post_title" : posttitle,
-        "post_content" : convertedContent,
-        "post_category" : cat
+        "post_content" : value,
+        "post_category" : cat,
+        "status" : 1,
     }
-   
-
     useEffect(
         ()=> {
            User.getServerData("/fetchpostcategories").then(
@@ -54,29 +43,29 @@ export default function EditPost(){
 
                }
            )
-
-           User.getServerData("/getpostbyid/"+postid).then(
+           User.getServerData("/getpostbyid/"+postId).then(
             (response)=> {
                 setPost(response.data)
+                setPostTitle(response.data.post_title)
+                setPostBanner(response.data.banner)
+                setPostcontent(response.data.post_content)
+                setCat(response.data.post_category)
             }
         ).catch(
             (err)=>{
-
             }
         )
-        }
 
-        
-        
-        ,[]
+
+        },[router.isReady, postId]
     )
 
     const handlePostSubmit = () => {
         setFormSubmitted(true)
         setFormDisabled(true)
-        User.saveDataToServer(formJson, "/savepost").then(
-            (resposne)=> {
-                toast.success("Post Save Successfully")
+        User.saveDataToServer(formJson, "/update-post").then(
+            (res)=> {
+                toast.success("Post Updated Successfully")
                 setFormDisabled(false)
                 setFormSubmitted(false)
             }
@@ -88,121 +77,59 @@ export default function EditPost(){
             }
         )
     }
-
-    const handleEditorChange = (state) => {
-        setEditorState(state);
-        convertContentToHTML();
-      }
-      const convertContentToHTML = () => {
-        let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-        setConvertedContent(currentContentAsHTML);
-      }
-    
-    const [editorState, setEditorState] = useState(
-        () => EditorState.createEmpty(),
-      );
-
-    const [editor, setEditor] = useState(false)
-
-    
-    useEffect(() => {
-        const edi =  require('react-draft-wysiwyg');
-        const htmlToDraft = require('html-to-draftjs')
-        setedit(edi)
-        setEditor(true)
-        sethtmlconv(htmlToDraft)
-
-    },[])
-{
-    editor ?  
-    const blocksFromHtml = htmconv.htmlToDraft(post?.post_content);
-    const { contentBlocks, entityMap } = blocksFromHtml;
-    const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
-    const editorStates = EditorState.createWithContent(contentState);
-    : ""
-}
-      const Styles = {
-          wrapperclass : {
-            padding: "1rem",
-            border: "1px solid #ccc",
-           
-          },
-          editorclass : {
-            backgroundColor: "lightgray",
-            padding: "1rem",
-          
-            fontSize : "12px",
-            border: "1px solid #ccc",
-          },
-          toolbarclass :  {
-            border: "1px solid #ccc"
-          }
-
-      }
-
-    return (
+      return (
         
-        <DashLayout title="Add New Post">
-        <div className="section-body mt-3">
+        <DashLayout title="Update Post">
+        <div className="section-body mt-3">  
         
-        
-<div className="card">
+    <div className="card">
     <div className="card-body">
 
         <div className="form-group">
-            <input value={post?.post_title} onInput={(e)=> setPostTitle(e.target.value)} className="form-control" placeholder="Post Title"/>
+            <input onInput={(e)=> setPostTitle(e.target.value)} value={posttitle} className="form-control" placeholder="Post Title"/>
         </div>
+        <br />
+        <div className="form-group">
+            <input onInput={(e)=> setPostBanner(e.target.value)} value={postBanner} className="form-control" placeholder="Post Banner"/>
+        </div>
+    <br />
   
-    {
-    editor ?  <edit.Editor
-        editorState={editorStates}
-        onEditorStateChange={handleEditorChange}
-        wrapperClassName={Styles.wrapperclass}
-        editorClassName={Styles.editorclass}
-        wrapperStyle = {Styles.wrapperclass}
-        editorStyle = {Styles.editorclass}
-        toolbarClassName={Styles.toolbarclass}
-      />  : ""
-
-    }
-    
-<div className="mb-10 mt-4">
-<InputLabel id="demo-simple-select-label">Choose Category</InputLabel>
-    <Select
-          labelId="demo-simple-select-placeholder-label-label"
-          id="demo-simple-select-placeholder-label"
-          value={cat}
-          onChange={(e)=>setCat(e.target.value)}
-          className="form-control"
-        >
-          <MenuItem  value="">
-            <em>Choose Category</em>
-          </MenuItem>
-
-          <MenuItem  value="livematch">
-            <em>Live Match Streaming</em>
-          </MenuItem>
-         { 
-         postCategory?.map(eachcat => <MenuItem value={eachcat.category_name}>{eachcat.category_name}</MenuItem>)
-         }
-    </Select>
+        <CKEditor 
+                            editor={ ClassicEditor }
+                            data={post.post_content}
+                            onChange={ ( event, editor ) => {
+                                const data = editor.getData();
+                                setValue(data);
+                               // console.log(data);
+                            } }
+                            onBlur={ ( event, editor ) => {
+                              //  console.log( 'Blur.', editor );
+                            } }
+                            onFocus={ ( event, editor ) => {
+                              //  console.log( 'Focus.', editor );
+                            } }
+    />
+    <br /> <br />
+<div className="form-group">
+    <label>Select Category</label>
+        <select value={cat} onChange={(e)=> setCat(e.target.value)} className="form-control" >
+            {
+                postCategory?.map(
+                    (eachcat)=>{
+                        return <option  selected={post.post_category == post.post_category ? "selected" : ""} value={post.post_category}>{eachcat?.category_name}</option>
+                    }
+                )
+            }
+        </select>
 </div>
-
-
-<div className="mt-4 text-right">
-            <button className="btn btn-primary" disabled={formDisabled}  onClick={handlePostSubmit}>Update Post {preloader}</button>
+    <br />
+    <div className="mt-4 text-right">
+    <button className="btn btn-primary" disabled={formDisabled}  onClick={handlePostSubmit}>Update Post</button>
 </div>
 
 </div>
 </div>
-
-    
-        {
-       // JSON.stringify(contentState)
-        }
-        </div>
+</div>
         </DashLayout>
     )
 }
-
-*/

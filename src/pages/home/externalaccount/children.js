@@ -158,19 +158,26 @@ return(
 
 <div className="table-responsive" id="users">
 <table className="table table-hover table-vcenter text-nowrap table_custom border-style list">
+
+<thead>
+    <tr>
+      <th scope="col"></th>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+
 <tbody>
    {
+    userstoshow.length == 0 ? <tr> <td> Children data is empty </td> </tr>  :
     userstoshow?.map( (eachuser)=> {
         return (
             <tr className="">
             <td className="width35 hidden-xs">
                 <a className="mail-star"><i className="fa fa-star"></i></a>
             </td>
-            <td className="text-center width40">
-                <div className="avatar d-block">
-                    <img className="avatar" src="/user.jpg" alt="avatar" />
-                </div>
-            </td>
+        
             <td>
                 <div><a href="javascript:void(0);">{eachuser.name}</a></div>
                 <div className="text-muted">{eachuser.jersey_number}</div>

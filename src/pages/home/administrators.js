@@ -51,7 +51,8 @@ export default function Administrators(props){
         "name" : name,
         "email" : email,
         "phone_number" : phone,
-        "role" : role ,
+        "current_season" : `${new Date().getFullYear()-1}/${new Date().getFullYear()}`,
+        "role" : role,
         "gender" : gender,
         "password" : "$2y$10$Rkrxe5WQKbQUAhR6c2S8MuoA/oWwUJHY13H7qIr.dsOzlmTwsvbJO",
         "status" : 0 
@@ -209,7 +210,7 @@ export default function Administrators(props){
             }
 
 
-                {   currentAdmin?.role == "super" ? 
+             
                     <div class="tab-pane fade" id="addnew" role="tabpanel">
                         <div class="row">
                             <div class="col-sm-12">
@@ -285,9 +286,7 @@ export default function Administrators(props){
                             </div>
                         </div>
                     </div>
-                    :   ""
-
-                    }
+                 
                 </div>
             </div>
         </div>

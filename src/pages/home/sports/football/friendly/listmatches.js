@@ -9,18 +9,18 @@ import { LoadingSkeleton } from '../../../../../components/skeleton';
 import MatchTable from '../components/matchtable';
 
 
-export default function ListMatchesLeague(){
+export default function ListFriendlyMatches(){
    const [pageReady, setPageReady] = useState(false)
    const [fetchedData, setFetchedData]  = useState([]);
    const router = useRouter()
-   const {leagueid,name} = router.query 
-
     useEffect(
         () => {
-        User.getServerData("/listleaguematches/"+leagueid)
+        User.getServerData("/listfriendlymatches")
             .then( (response)=>{
                setPageReady(true)
-                setFetchedData(response.data);
+               var res = response.data;
+               var concdata = [...res.today, ...res.not_played, ...res.played]
+                setFetchedData(concdata);
             })
             .catch((response)=>{
                 setPageReady(false)
@@ -42,8 +42,7 @@ export default function ListMatchesLeague(){
                     User.saveDataToServer("formJson", "/startleague").then(
                         (response)=> {
                             toast.success("league_name" + " Started for this Season")
-                            //saveLeagueStart(true);
-                            //setOpen(false);
+                           
                         }
                     ).catch(
                         (err)=>{
@@ -57,7 +56,7 @@ export default function ListMatchesLeague(){
     
     return (
         
-<DashLayout title="League Matches">
+<DashLayout title="Matches">
     <div className="section-body mt-2">
 
 <div className="row">
@@ -69,8 +68,8 @@ export default function ListMatchesLeague(){
 </div>
 <div className="col-3">
     <div className="card p-1 d-flex justify-content-center">
-            <h6>League::</h6>
-            <h6>{name}</h6>
+            <h6>Friendly Matches</h6>
+            
     </div>
 </div>
 </div>
@@ -89,7 +88,7 @@ export default function ListMatchesLeague(){
   </thead>
 <tbody>
     {
-     fetchedData?.map(
+        fetchedData.length == 0 ? <tr><td>Data is empty</td></tr> :  fetchedData?.map(
             (eachmatch) => {
                 return (<MatchTable matchdata={eachmatch} />)
             }

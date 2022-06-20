@@ -6,12 +6,12 @@ export var sportslist = [
         'icon' : <GiSoccerField />,
         'status' : 1
     },
-    {
-        'id' : 2,
-        'name' : 'Cup',
-        'icon' : <GiTrophyCup />,
-        'status' : 1
-    },
+    // {
+    //     'id' : 2,
+    //     'name' : 'Cup',
+    //     'icon' : <GiTrophyCup />,
+    //     'status' : 1
+    // },
     {
         'id' : 3,
         'name' : 'Friendly',

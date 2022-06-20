@@ -84,11 +84,11 @@ export default function ListTeamMatches(){
       <th scope="col">Score</th>
       <th scope="col">Points</th>
       <th scope="col">Status</th>
-      <th scope="col"></th>
     </tr>
   </thead>
 <tbody>
     {
+        fetchedData.length == 0 ?  <tr><td>No match found</td></tr> :
      fetchedData?.map(
             (eachmatch) => {
                 return (<MatchTable matchdata={eachmatch} />)

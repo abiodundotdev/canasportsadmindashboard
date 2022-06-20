@@ -30,9 +30,9 @@ export default function SportHome(){
     
   
     const formJson = {
-        "post_title" : posttitle,
-        "post_content" : convertedContent,
-      
+        "title" : posttitle,
+        "content" : convertedContent,
+        "type" : msgMode,
     }
 
     useEffect(
@@ -120,7 +120,7 @@ export default function SportHome(){
 
     return (
         
-        <DashLayout title="Send New Message">
+        <DashLayout title="Send Group/General Mail">
         <div className="section-body mt-3">
         
         
@@ -147,15 +147,12 @@ export default function SportHome(){
 <div className="mb-10 mt-4">
 <InputLabel id="demo-simple-select-label">Choose Mode</InputLabel>
     <select className="form-control" onChange={(e)=>setmsgMode(e.target.value)}>
-        <option value="all">Send to All Users</option>
-       { 
-       //<option value="sub">Send to Subscribed Users</option> 
-        //<option value="school">Send to Team/School Owners</option>
-        //<option value="mobile">Send to Mobile Applications</option>
-        }
+        <option value="users">Send to Users</option>
+        <option value="schools">Send to School Owners</option>
+        <option value="groups">Send to Group Owners</option>
+        <option value="parents">Send to Parents</option>
     </select>
 </div>
-{msgMode}
 
 <div className="mt-4 text-right">
             <button className="btn btn-primary" disabled={formDisabled}  onClick={handlePostSubmit}>Send Message{preloader}</button>
@@ -163,12 +160,7 @@ export default function SportHome(){
 
 </div>
 </div>
-
-    
-        {
-       // JSON.stringify(contentState)
-        }
-        </div>
-        </DashLayout>
+</div>
+</DashLayout>
     )
 }

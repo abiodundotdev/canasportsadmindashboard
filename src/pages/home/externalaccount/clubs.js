@@ -100,6 +100,13 @@ return(
         <div className="input-group mt-2">
             <input type="text" value={keyword} onInput={(e) => setKeyword(e.target.value)} className="form-control search" placeholder="Search Club Name" />
         </div>
+
+        <br />
+
+
+        <div className="input-group mt-2">
+            <Link href="/home/externalaccount/addnewclub"><button className='btn btn-primary'>Add New Club</button></Link> 
+        </div>
        
     </div>
 </div>

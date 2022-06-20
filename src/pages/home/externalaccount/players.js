@@ -21,7 +21,7 @@ export default function Players(props){
     const [disable, setDisable] = useState(false)
     const [pageReady, setPageReady] = useState(false)
     const [currentPage, setCurrentPage] = useState(1)
-    const [showPerPage, setPostPerPage] = useState(1)
+    const [showPerPage, setPostPerPage] = useState(10)
     const [smodal, showDataModal] = useState(false)
     const [selectedplayer, setSelectedPlayer]= useState({})
     const usersToShow = currentPage * showPerPage
@@ -109,6 +109,18 @@ return(
 
 <div className="table-responsive" id="users">
 <table className="table table-hover table-vcenter text-nowrap table_custom border-style list">
+
+<thead>
+    <tr>
+    <th scope="col"><small></small></th>
+    <th scope="col"><small></small></th>
+    <th scope="col"><small>Name (Jersey Number)</small></th>
+    <th scope="col"><small>Status</small></th>
+    <th scope="col"><small>Team</small></th>
+    <th scope="col"><small>Action </small></th>
+    </tr>
+</thead>
+
 <tbody>
    {
     userstoshow?.map( (eachuser)=> {
@@ -148,8 +160,10 @@ return(
                 :
                 <a className="btn btn-primary ml-2" onClick={() => handleDisable(eachuser.id, "verified", eachuser.name)} data-toggle="tooltip" title="Enable"><i><BsFillShieldFill /> </i></a>
                }
-               <a className="btn btn-warning ml-2" onClick={() => showModal(eachuser)} data-toggle="tooltip" title="Capture Biometrics"><i><GiFingerPrint /></i></a>
-                </td>
+              {
+              // <a className="btn btn-warning ml-2" onClick={() => showModal(eachuser)} data-toggle="tooltip" title="Capture Biometrics"><i><GiFingerPrint /></i></a>
+              }
+               </td>
         </tr>
         )
     })  
