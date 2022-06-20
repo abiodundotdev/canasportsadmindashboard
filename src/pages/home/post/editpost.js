@@ -1,11 +1,11 @@
 import DashLayout from '../../../components/dashlayout'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {toast} from 'react-toastify'
 import User from '../../../services/User';
 import ScaleLoader from "react-spinners/ScaleLoader";
 import {useRouter} from 'next/router'
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+// import { CKEditor } from '@ckeditor/ckeditor5-react';
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 export default function EditPostPage(){
     const [edit, setedit] = useState({})
@@ -22,7 +22,17 @@ export default function EditPostPage(){
     const [isFormSubmitted, setFormSubmitted] = useState(false)
     const preloader = isFormSubmitted ? <ScaleLoader height={13} color="white" /> : " "
     const [value, setValue] =  useState("");
-  
+     const editorRef = useRef()
+    const [ editorLoaded, setEditorLoaded ] = useState( false )
+    const { CKEditor, ClassicEditor} = editorRef.current || {}
+
+    useEffect( () => {
+        editorRef.current = {
+          CKEditor: require( '@ckeditor/ckeditor5-react' ).CKEditor, //Added .CKEditor
+          ClassicEditor: require( '@ckeditor/ckeditor5-build-classic' ),
+        }
+        setEditorLoaded( true )
+    }, [] );
   
     const formJson = {
         "post_id" : postId,
@@ -94,21 +104,22 @@ export default function EditPostPage(){
         </div>
     <br />
   
-        <CKEditor 
-                            editor={ ClassicEditor }
-                            data={post.post_content}
-                            onChange={ ( event, editor ) => {
-                                const data = editor.getData();
-                                setValue(data);
-                               // console.log(data);
-                            } }
-                            onBlur={ ( event, editor ) => {
-                              //  console.log( 'Blur.', editor );
-                            } }
-                            onFocus={ ( event, editor ) => {
-                              //  console.log( 'Focus.', editor );
-                            } }
-    />
+
+    <>
+        {editorLoaded ? <CKEditor
+            editor={ ClassicEditor }
+            data={post.post_content}
+            onReady={ editor => {
+              // You can store the "editor" and use when it is needed.
+              console.log('Editor is ready to use!', editor);           
+            } }
+            onChange={ (event, editor ) => {
+              const data = editor.getData()
+              setValue(data);
+            } }
+        /> : <p>Carregando...</p>}
+     </>
+
     <br /> <br />
 <div className="form-group">
     <label>Select Category</label>

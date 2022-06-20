@@ -1,5 +1,5 @@
 import DashLayout from '../../../components/dashlayout'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link' 
 import {GrTransaction} from 'react-icons/gr'
 import {GiShieldDisabled} from 'react-icons/gi'
@@ -12,8 +12,6 @@ import User from '../../../services/User';
 import { InputLabel, MenuItem, Select } from '@material-ui/core';
 import ScaleLoader from "react-spinners/ScaleLoader";
 import moment from 'moment';
-import { CKEditor } from '@ckeditor/ckeditor5-react';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 
 
@@ -25,7 +23,7 @@ export default function SportHome(){
     const [convertedContent , setConvertedContent] = useState("")
     const [posttitle , setPostTitle] = useState("")
     const [postBanner , setPostBanner] = useState("")
-    const [cat , setCat] = useState("")
+    const [cat , setCat] = useState("Football")
     const [match, setMatch] = useState([]);
     const [selectedMatch, setSelectedMatch] = useState("");
     const [postCategory , setpostCategory] = useState([])
@@ -33,7 +31,18 @@ export default function SportHome(){
     const [isFormSubmitted, setFormSubmitted] = useState(false)
     const [value, setValue] =  useState("");
     const preloader = isFormSubmitted ? <ScaleLoader height={13} color="white" /> : " "
-    
+    const editorRef = useRef()
+    const [ editorLoaded, setEditorLoaded ] = useState( false )
+    const { CKEditor, ClassicEditor} = editorRef.current || {}
+
+    useEffect( () => {
+        editorRef.current = {
+          CKEditor: require( '@ckeditor/ckeditor5-react' ).CKEditor, //Added .CKEditor
+          ClassicEditor: require( '@ckeditor/ckeditor5-build-classic' ),
+        }
+        setEditorLoaded( true )
+    }, [editorLoaded] );
+  
   
     const formJson = {
         "post_title" : posttitle,
@@ -97,46 +106,6 @@ export default function SportHome(){
         )
     }
 
-    const handleEditorChange = (state) => {
-        setEditorState(state);
-        convertContentToHTML();
-      }
-      const convertContentToHTML = () => {
-        let currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
-        setConvertedContent(currentContentAsHTML);
-      }
-    
-    const [editorState, setEditorState] = useState(
-        () => EditorState.createEmpty(),
-      );
-
-    const [editor, setEditor] = useState(false)
-    
-    useEffect(() => {
-        const edi =  require('react-draft-wysiwyg');
-        setedit(edi)
-        setEditor(true)
-      },[])
-
-      const Styles = {
-          wrapperclass : {
-            padding: "1rem",
-            border: "1px solid #ccc",
-           
-          },
-          editorclass : {
-            backgroundColor: "lightgray",
-            padding: "1rem",
-          
-            fontSize : "12px",
-            border: "1px solid #ccc",
-          },
-          toolbarclass :  {
-            border: "1px solid #ccc"
-          }
-
-      }
-
     return (
         
         <DashLayout title="Add New Post">
@@ -156,20 +125,19 @@ export default function SportHome(){
   
   
    
-        <CKEditor 
-                            editor={ ClassicEditor }
-                            onChange={ ( event, editor ) => {
-                                const data = editor.getData();
-                                setValue(data);
-                                //console.log(data);
-                            } }
-                            onBlur={ ( event, editor ) => {
-                              //  console.log( 'Blur.', editor );
-                            } }
-                            onFocus={ ( event, editor ) => {
-                               // console.log( 'Focus.', editor );
-                            } }
-    />
+        <>
+        {editorLoaded ? <CKEditor
+            editor={ ClassicEditor }
+            onReady={ editor => {
+              // You can store the "editor" and use when it is needed.
+              console.log('Editor is ready to use!', editor);           
+            } }
+            onChange={ (event, editor ) => {
+              const data = editor.getData()
+              setValue(data);
+            } }
+        /> : <p>Carregando...</p>}
+     </>
 
 <br /> <br />
 <div className="form-group">
