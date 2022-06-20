@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import {useRouter} from 'next/router';
 import { LoadingSkeletonSmTable } from "../../../../../components/skeleton";
 import moment from "moment";
+import swal from "sweetalert";
 
 export default function MatchListCard({matchdata, day, isitemfounded}){
 const {data : listallclubs} = useSWR("/listallclubs");
@@ -95,7 +96,7 @@ function handleSubItemClick(action,match){
            }
        ).catch(
            (err)=>{
-            toast.error("Not added for now")
+            toast.error("Not updated")
            }
        )
     
@@ -142,7 +143,7 @@ return (
                         return(
                        <>
                       { matchdata?.length <= 0 ? <div>Matches Not Found</div> : " "}
-                            <tr key={match.match_id} onContextMenu={displayMenu("menu_"+match.match_id)}>
+                            <tr key={match.id} onContextMenu={displayMenu("menu_"+match.id)}>
                             <td>{index+1}</td>
                             <td>{match.club_one.team_name}</td> 
                             <td>{match.club_two.team_name}</td>
@@ -152,20 +153,12 @@ return (
                             <td>{match.match_time}</td>
                             <td>{matchStatusToString(match.status,match.match_half)}</td> 
                        
-                <Menu id={"menu_"+match?.match_id}>
+                <Menu id={"menu_"+match?.id}>
                         
-                        <Item>
-                        Manage {match.club_one.team_name + " VS " + match.club_two.team_name}
-                        </Item>
-                        <Separator />
+                     
 
                         <Item onClick={handleItemClick(match)}>
                         Live Update of {match.club_one.team_name + " VS " + match.club_two.team_name}
-                        </Item>
-                        <Separator />
-
-                        <Item>
-                        Update {match.club_one.team_name + " VS " + match.club_two.team_name}    
                         </Item>
                         <Separator />
 

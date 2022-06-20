@@ -48,11 +48,11 @@ function MatchCard({footbaldata,day}){
             <MenuItem onClick={() => router.push("/home/sports/football/update")}>
                <li className="list-group-item"><i className="fa fa-edit mr-10"></i><span>Edit</span></li>
             </MenuItem>
-               
+            {   
             <MenuItem onClick={() => router.push("home/sports/football/update")}>
              <Link href={"football/update/"+data.teama}><a><li className="list-group-item"><i className="fa fa-book mr-10"></i><span>Updates</span></li></a></Link>
             </MenuItem>
-               
+                }
                 </ul>
 
             </ContextMenu>
