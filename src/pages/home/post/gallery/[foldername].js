@@ -73,6 +73,8 @@ export default function SportHome(){
             }
         ).catch(
             (err)=>{
+                setDisabled(false)
+                toast.success(err);
                 console.log(err)
             }
         )

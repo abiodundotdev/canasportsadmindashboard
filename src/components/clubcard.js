@@ -22,7 +22,7 @@ export default function ClubCard({data}){
 <div class="col-xl-3 col-lg-3 col-md-3">
     <div class="card">
         <div class="card-body text-center ribbon">
-            <img src={data?.logo_url} className="rounded-circle img-thumbnail" alt={CLUB_LOGO_URL.concat(data.logo_url)} style={{width : '150px', height : '150px'}} />
+            <img src={data?.club_logo} className="rounded-circle img-thumbnail" alt={data?.club_logo} style={{width : '150px', height : '150px'}} />
             <h6 class="mt-3 mb-0">{data?.team_name}</h6>      
             <div>
             <br />
